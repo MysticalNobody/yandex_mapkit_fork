@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_annotation_target
+
 part of yandex_mapkit;
 
 /// Uniquely identifies object an among all [MapObjectCollection.mapObjects] of a specific type.
@@ -7,9 +9,7 @@ class MapObjectId extends Equatable {
   final String value;
 
   @override
-  List<Object> get props => <Object>[
-    value
-  ];
+  List<Object> get props => <Object>[value];
 
   @override
   bool get stringify => true;
@@ -49,4 +49,27 @@ abstract class MapObject<T> {
 
   /// Returns all needed data to remove this object
   Map<String, dynamic> removeJson();
+}
+
+class MapObjectDiff {
+  const MapObjectDiff({
+    required final this.toRemove,
+    required final this.toAdd,
+    required final this.toChange,
+    required final this.resetBeforeAction,
+  });
+
+  final Iterable<MapObject> toRemove;
+  final Iterable<MapObject> toAdd;
+  final Iterable<MapObject> toChange;
+  final bool resetBeforeAction;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        // TODO(arenukvern): remove toList
+        'toAdd': toAdd.map((e) => e.toJson()).toList(),
+        // TODO(arenukvern): remove toList
+        'toChange': toChange.map((e) => e.toJson()).toList(),
+        // TODO(arenukvern): remove toList
+        'toRemove': toRemove.map((e) => e.toJson()).toList(),
+      };
 }

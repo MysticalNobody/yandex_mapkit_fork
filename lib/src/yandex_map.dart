@@ -29,8 +29,9 @@ class YandexMap extends StatefulWidget {
       this.mode2DEnabled = false,
       this.indoorEnabled = false,
       this.liteModeEnabled = false,
-      this.logoAlignment =
-          const MapAlignment(horizontal: HorizontalAlignment.right, vertical: VerticalAlignment.bottom),
+      this.logoAlignment = const MapAlignment(
+          horizontal: HorizontalAlignment.right,
+          vertical: VerticalAlignment.bottom),
       this.focusRect,
       this.onMapCreated,
       this.onMapTap,
@@ -139,28 +140,21 @@ class YandexMap extends StatefulWidget {
 class _YandexMapState extends State<YandexMap> {
   late _YandexMapOptions _yandexMapOptions;
 
-  /// Root object which contains all [MapObject] which were added to the map by user
-  MapObjectCollection _mapObjectCollection =
-      MapObjectCollection(mapId: MapObjectId('root_map_object_collection'), mapObjects: []);
-
   /// All [MapObject] which were created natively
   ///
   /// This mainly refers to objects that can't be created by normal means
   /// Cluster placemarks, user location objects, etc.
-  final List<MapObject> _nonRootMapObjects = [];
+  final _nonRootMapObjects = <MapObjectId, MapObject>{};
+  final _mapObjects = <MapObjectId, MapObject>{};
+  Map<MapObjectId, MapObject> get _allMapObjects => _mapObjects;
 
-  /// All visible [MapObject]
-  ///
-  /// This contains all objects that were created by any means
-  List<MapObject> get _allMapObjects => _mapObjectCollection.mapObjects + _nonRootMapObjects;
-
-  final Completer<YandexMapController> _controller = Completer<YandexMapController>();
+  final Completer<YandexMapController> _controller =
+      Completer<YandexMapController>();
 
   @override
   void initState() {
     super.initState();
     _yandexMapOptions = _YandexMapOptions.fromWidget(widget);
-    _mapObjectCollection = _mapObjectCollection.copyWith(mapObjects: widget.mapObjects);
   }
 
   @override
@@ -175,7 +169,6 @@ class _YandexMapState extends State<YandexMap> {
   void didUpdateWidget(YandexMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     _updateMapOptions();
-    _updateMapObjects();
   }
 
   void _updateMapOptions() async {
@@ -192,24 +185,14 @@ class _YandexMapState extends State<YandexMap> {
     _yandexMapOptions = newOptions;
   }
 
-  void _updateMapObjects() async {
-    final updatedMapObjectCollection = _mapObjectCollection.copyWith(mapObjects: widget.mapObjects);
-    final updates = MapObjectUpdates.from({_mapObjectCollection}, {updatedMapObjectCollection});
-
-    final controller = await _controller.future;
-    log(updates.toJson().toString());
-
-    await controller._updateMapObjects(updates.toJson());
-    _mapObjectCollection = updatedMapObjectCollection;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (defaultTargetPlatform == TargetPlatform.android) {
       if (AndroidYandexMap.useAndroidViewSurface) {
         return PlatformViewLink(
             viewType: YandexMap._viewType,
-            surfaceFactory: (BuildContext context, PlatformViewController controller) {
+            surfaceFactory:
+                (BuildContext context, PlatformViewController controller) {
               return AndroidViewSurface(
                 controller: controller as AndroidViewController,
                 gestureRecognizers: widget.gestureRecognizers,
@@ -261,10 +244,7 @@ class _YandexMapState extends State<YandexMap> {
 
   Map<String, dynamic> _creationParams() {
     final mapOptions = _yandexMapOptions.toJson();
-    final mapObjects =
-        MapObjectUpdates.from({_mapObjectCollection.copyWith(mapObjects: [])}, {_mapObjectCollection}).toJson();
-
-    return {'mapOptions': mapOptions, 'mapObjects': mapObjects};
+    return {'mapOptions': mapOptions, 'mapObjects': {}};
   }
 }
 
@@ -336,6 +316,8 @@ class _YandexMapOptions {
   Map<String, dynamic> mapUpdates(_YandexMapOptions newOptions) {
     final prevOptionsMap = toJson();
 
-    return newOptions.toJson()..removeWhere((String key, dynamic value) => prevOptionsMap[key] == value);
+    return newOptions.toJson()
+      ..removeWhere(
+          (String key, dynamic value) => prevOptionsMap[key] == value);
   }
 }
