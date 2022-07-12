@@ -42,11 +42,11 @@ abstract class MapObject<T> {
   Map<String, dynamic> toJson();
 
   /// Returns all needed data to create this object
-  Map<String, dynamic> _createJson();
+  Map<String, dynamic> createJson();
 
   /// Returns all needed data to update this object
-  Map<String, dynamic> _updateJson(MapObject previous);
+  Map<String, dynamic> updateJson(MapObject previous);
 
   /// Returns all needed data to remove this object
-  Map<String, dynamic> _removeJson();
+  Map<String, dynamic> removeJson();
 }
