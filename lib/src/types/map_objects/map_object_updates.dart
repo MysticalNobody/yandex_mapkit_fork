@@ -59,11 +59,11 @@ class MapObjectUpdates<T extends MapObject> extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'toAdd': _objectsToAdd.map((MapObject el) => el._createJson()).toList(),
+      'toAdd': _objectsToAdd.map((MapObject el) => el.createJson()).toList(),
       'toChange': _objectsToChange.map((MapObject el) =>
-        el._updateJson(previous.firstWhere((MapObject prevEl) => prevEl.mapId == el.mapId))
+        el.updateJson(previous.firstWhere((MapObject prevEl) => prevEl.mapId == el.mapId))
       ).toList(),
-      'toRemove': _objectsToRemove.map((MapObject el) => el._removeJson()).toList(),
+      'toRemove': _objectsToRemove.map((MapObject el) => el.removeJson()).toList(),
     };
   }
 }

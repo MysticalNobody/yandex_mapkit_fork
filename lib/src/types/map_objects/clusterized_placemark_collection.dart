@@ -166,7 +166,7 @@ class ClusterizedPlacemarkCollection extends Equatable implements MapObject {
   }
 
   @override
-  Map<String, dynamic> _createJson() {
+  Map<String, dynamic> createJson() {
     return toJson()..addAll({
       'type': runtimeType.toString(),
       'placemarks': MapObjectUpdates.from(
@@ -177,7 +177,7 @@ class ClusterizedPlacemarkCollection extends Equatable implements MapObject {
   }
 
   @override
-  Map<String, dynamic> _updateJson(MapObject previous) {
+  Map<String, dynamic> updateJson(MapObject previous) {
     assert(mapId == previous.mapId);
 
     return toJson()..addAll({
@@ -190,7 +190,7 @@ class ClusterizedPlacemarkCollection extends Equatable implements MapObject {
   }
 
   @override
-  Map<String, dynamic> _removeJson() {
+  Map<String, dynamic> removeJson() {
     return {
       'id': mapId.value,
       'type': runtimeType.toString()
