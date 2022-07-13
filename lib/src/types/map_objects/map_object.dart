@@ -64,9 +64,9 @@ class MapObjectDiff {
     toChange: [],
     toRemove: [],
   );
-  final Iterable<MapObject> toRemove;
-  final Iterable<MapObject> toAdd;
-  final Iterable<MapObject> toChange;
+  final List<MapObject> toRemove;
+  final List<MapObject> toAdd;
+  final List<MapObject> toChange;
   final bool resetBeforeAction;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -77,4 +77,18 @@ class MapObjectDiff {
         // TODO(arenukvern): remove toList
         'toRemove': toRemove.map((e) => e.toJson()).toList(),
       };
+
+  MapObjectDiff copyWith({
+    List<MapObject>? toRemove,
+    List<MapObject>? toAdd,
+    List<MapObject>? toChange,
+    bool? resetBeforeAction,
+  }) {
+    return MapObjectDiff(
+      toRemove: toRemove ?? this.toRemove,
+      toAdd: toAdd ?? this.toAdd,
+      toChange: toChange ?? this.toChange,
+      resetBeforeAction: resetBeforeAction ?? this.resetBeforeAction,
+    );
+  }
 }

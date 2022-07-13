@@ -168,18 +168,7 @@ class YandexMapController extends ChangeNotifier {
   }
 
   Future<void> updateMapObjects(MapObjectDiff updates) async {
-    if (updates.resetBeforeAction) {
-      _yandexMapState._mapObjects.clear();
-      await _channel.invokeMethod(
-        'updateMapObjects',
-        updates.toJson(),
-      );
-    } else {
-      await _channel.invokeMethod(
-        'updateMapObjects',
-        updates.toJson(),
-      );
-
+    void _setMapObjects() {
       final toAddIterables = <MapEntry<MapObjectId, MapObject>>[];
       if (updates.toAdd.isNotEmpty) {
         toAddIterables.addAll(updates.toAdd.map((e) => MapEntry(e.mapId, e)));
@@ -192,6 +181,26 @@ class YandexMapController extends ChangeNotifier {
       if (toAddIterables.isNotEmpty) {
         _yandexMapState._mapObjects.addEntries(toAddIterables);
       }
+    }
+
+    if (updates.resetBeforeAction) {
+      await _channel.invokeMethod(
+        'updateMapObjects',
+        updates.copyWith(
+          toRemove: [
+            ...updates.toRemove,
+            ..._yandexMapState._mapObjects.values
+          ],
+        ).toJson(),
+      );
+      _yandexMapState._mapObjects.clear();
+      _setMapObjects();
+    } else {
+      await _channel.invokeMethod(
+        'updateMapObjects',
+        updates.toJson(),
+      );
+      _setMapObjects();
       if (updates.toRemove.isNotEmpty) {
         for (final mapObject in updates.toRemove) {
           _yandexMapState._mapObjects.remove(mapObject.mapId);
