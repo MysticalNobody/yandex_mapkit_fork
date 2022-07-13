@@ -172,7 +172,7 @@ class YandexMapController extends ChangeNotifier {
       _yandexMapState._mapObjects.clear();
       await _channel.invokeMethod(
         'updateMapObjects',
-        MapObjectDiff.empty.toJson(),
+        updates.toJson(),
       );
     } else {
       await _channel.invokeMethod(
