@@ -146,7 +146,8 @@ class _YandexMapState extends State<YandexMap> {
   /// Cluster placemarks, user location objects, etc.
   final _nonRootMapObjects = <MapObjectId, MapObject>{};
   final _mapObjects = <MapObjectId, MapObject>{};
-  Map<MapObjectId, MapObject> get _allMapObjects => _mapObjects;
+  Map<MapObjectId, MapObject> get _allMapObjects =>
+      {..._mapObjects, ..._nonRootMapObjects};
 
   final Completer<YandexMapController> _controller =
       Completer<YandexMapController>();

@@ -167,8 +167,37 @@ class YandexMapController extends ChangeNotifier {
     await _channel.invokeMethod('updateMapOptions', options);
   }
 
-  Future<void> updateMapObjects(Map<String, dynamic> updates) async {
-    await _channel.invokeMethod('updateMapObjects', updates);
+  Future<void> updateMapObjects(MapObjectDiff updates) async {
+    if (updates.resetBeforeAction) {
+      _yandexMapState._mapObjects.clear();
+      await _channel.invokeMethod(
+        'updateMapObjects',
+        MapObjectDiff.empty.toJson(),
+      );
+    } else {
+      await _channel.invokeMethod(
+        'updateMapObjects',
+        updates.toJson(),
+      );
+
+      final toAddIterables = <MapEntry<MapObjectId, MapObject>>[];
+      if (updates.toAdd.isNotEmpty) {
+        toAddIterables.addAll(updates.toAdd.map((e) => MapEntry(e.mapId, e)));
+      }
+      if (updates.toChange.isNotEmpty) {
+        toAddIterables
+            .addAll(updates.toChange.map((e) => MapEntry(e.mapId, e)));
+      }
+
+      if (toAddIterables.isNotEmpty) {
+        _yandexMapState._mapObjects.addEntries(toAddIterables);
+      }
+      if (updates.toRemove.isNotEmpty) {
+        for (final mapObject in updates.toRemove) {
+          _yandexMapState._mapObjects.remove(mapObject.mapId);
+        }
+      }
+    }
   }
 
   Future<dynamic> _handleMethodCall(MethodCall call) async {

@@ -58,7 +58,12 @@ class MapObjectDiff {
     required final this.toChange,
     required final this.resetBeforeAction,
   });
-
+  static const empty = MapObjectDiff(
+    resetBeforeAction: true,
+    toAdd: [],
+    toChange: [],
+    toRemove: [],
+  );
   final Iterable<MapObject> toRemove;
   final Iterable<MapObject> toAdd;
   final Iterable<MapObject> toChange;
