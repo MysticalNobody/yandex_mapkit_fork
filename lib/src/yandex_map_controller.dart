@@ -201,7 +201,7 @@ class YandexMapController extends ChangeNotifier {
     };
 
     await _channel.invokeMethod('updateMapObjects', {
-      'toChange': json,
+      'toChange': [json],
     });
   }
 
