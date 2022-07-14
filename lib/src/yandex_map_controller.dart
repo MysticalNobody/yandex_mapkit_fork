@@ -189,7 +189,7 @@ class YandexMapController extends ChangeNotifier {
 
   Future<void> _passUpdateMapObjects<T extends MapObject>({
     required Map<String, dynamic> mapObjectsJson,
-    int zIndex = 0,
+    double zIndex = 0,
     bool isVisible = true,
   }) async {
     final json = {
