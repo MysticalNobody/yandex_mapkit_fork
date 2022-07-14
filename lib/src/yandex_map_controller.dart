@@ -229,6 +229,27 @@ class YandexMapController extends ChangeNotifier {
     }
   }
 
+  List<T> _updateMapObjectList<T extends MapObject>({
+    required MapObjectDiff<T> diff,
+    required List<T> values,
+  }) {
+    final valuesMap = Map.fromEntries(values.map((e) => MapEntry(e.mapId, e)));
+    final toAdd = <T>[];
+
+    if (diff.toAdd.isNotEmpty) {
+      toAdd.addAll(diff.toAdd);
+    }
+    if (diff.toRemove.isNotEmpty) {
+      for (final el in diff.toRemove) {
+        valuesMap.remove(el.mapId);
+      }
+    }
+    if (diff.toChange.isNotEmpty) {
+      valuesMap.addEntries(diff.toChange.map((e) => MapEntry(e.mapId, e)));
+    }
+    return [...toAdd, ...valuesMap.values];
+  }
+
   /// For example update placemarks in [ClusterizedPlacemarkCollection]
   Future<void> updateMapObjectsForRootMapObject({
     /// cars or markers id
@@ -240,8 +261,24 @@ class YandexMapController extends ChangeNotifier {
     var mapObjectKeyName = '';
     if (rootMapObject is ClusterizedPlacemarkCollection) {
       mapObjectKeyName = 'placemarks';
+      _updateMapObjects(MapObjectDiff(toChange: [
+        rootMapObject.copyWith(
+          placemarks: _updateMapObjectList(
+            diff: mapObjects as MapObjectDiff<PlacemarkMapObject>,
+            values: rootMapObject.placemarks,
+          ),
+        )
+      ]));
     } else if (rootMapObject is MapObjectCollection) {
       mapObjectKeyName = 'mapObjects';
+      _updateMapObjects(MapObjectDiff(toChange: [
+        rootMapObject.copyWith(
+          mapObjects: _updateMapObjectList(
+            diff: mapObjects,
+            values: rootMapObject.mapObjects,
+          ),
+        )
+      ]));
     }
     if (mapObjectKeyName.isEmpty) throw ArgumentError.value('mapObjectKeyName');
     await _passUpdateMapObjects(
@@ -256,7 +293,6 @@ class YandexMapController extends ChangeNotifier {
         ]
       },
     );
-    _updateMapObjects(mapObjects);
   }
 
   Future<dynamic> _handleMethodCall(MethodCall call) async {
