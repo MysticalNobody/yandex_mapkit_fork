@@ -199,7 +199,7 @@ class YandexMapController extends ChangeNotifier {
       'zIndex': zIndex,
       'isVisible': isVisible,
       'mapObjects': mapObjectsJson,
-      'consumeTapEvents': isVisible,
+      'consumeTapEvents': false,
     };
 
     await _channel.invokeMethod('updateMapObjects', {
