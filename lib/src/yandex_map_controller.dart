@@ -187,9 +187,11 @@ class YandexMapController extends ChangeNotifier {
     _updateMapObjects(diff);
   }
 
+  /// [mapObjectsJson] is a diff {toChange, toAdd, toRemove}
+  /// toChange: List<MapObject>
   Future<void> _passUpdateMapObjects<T extends MapObject>({
     required Map<String, dynamic> mapObjectsJson,
-    double zIndex = 0,
+    double zIndex = 0.0,
     bool isVisible = true,
   }) async {
     final json = {
@@ -242,10 +244,12 @@ class YandexMapController extends ChangeNotifier {
     if (mapObjectKeyName.isEmpty) throw ArgumentError.value('mapObjectKeyName');
     await _passUpdateMapObjects(
       mapObjectsJson: {
-        'toChange': {
-          ...rootMapObject.toJson(),
-          mapObjectKeyName: mapObjects,
-        }
+        'toChange': [
+          {
+            ...rootMapObject.toJson(),
+            mapObjectKeyName: mapObjects.toJson(),
+          }
+        ]
       },
     );
   }
