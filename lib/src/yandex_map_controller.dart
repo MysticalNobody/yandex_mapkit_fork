@@ -256,6 +256,7 @@ class YandexMapController extends ChangeNotifier {
         ]
       },
     );
+    _updateMapObjects(mapObjects);
   }
 
   Future<dynamic> _handleMethodCall(MethodCall call) async {
