@@ -250,6 +250,42 @@ class YandexMapController extends ChangeNotifier {
     return [...toAdd, ...valuesMap.values];
   }
 
+  Future<void> updatePlacemarksForRootMapObject({
+    /// cars or markers id
+    required MapObjectId id,
+    required MapObjectDiff<PlacemarkMapObject> mapObjects,
+  }) async {
+    final rootMapObject = _yandexMapState._mapObjects[id]!;
+    if (rootMapObject is ClusterizedPlacemarkCollection) {
+      _updateMapObjects(
+        MapObjectDiff(
+          toChange: [
+            rootMapObject.copyWith(
+              placemarks: _updateMapObjectList(
+                diff: mapObjects,
+                values: rootMapObject.placemarks,
+              ),
+            )
+          ],
+        ),
+      );
+    } else {
+      throw ArgumentError.value(rootMapObject);
+    }
+    await _passUpdateMapObjects(
+      mapObjectsJson: {
+        'toAdd': [],
+        'toRemove': [],
+        'toChange': [
+          {
+            ...rootMapObject.toJson(),
+            'placemarks': mapObjects.toJson(),
+          }
+        ]
+      },
+    );
+  }
+
   /// For example update placemarks in [ClusterizedPlacemarkCollection]
   Future<void> updateMapObjectsForRootMapObject({
     /// cars or markers id
@@ -258,29 +294,22 @@ class YandexMapController extends ChangeNotifier {
   }) async {
     // cars or markers
     final rootMapObject = _yandexMapState._mapObjects[id]!;
-    var mapObjectKeyName = '';
-    if (rootMapObject is ClusterizedPlacemarkCollection) {
-      mapObjectKeyName = 'placemarks';
-      _updateMapObjects(MapObjectDiff(toChange: [
-        rootMapObject.copyWith(
-          placemarks: _updateMapObjectList(
-            diff: mapObjects as MapObjectDiff<PlacemarkMapObject>,
-            values: rootMapObject.placemarks,
-          ),
-        )
-      ]));
-    } else if (rootMapObject is MapObjectCollection) {
-      mapObjectKeyName = 'mapObjects';
-      _updateMapObjects(MapObjectDiff(toChange: [
-        rootMapObject.copyWith(
-          mapObjects: _updateMapObjectList(
-            diff: mapObjects,
-            values: rootMapObject.mapObjects,
-          ),
-        )
-      ]));
+    if (rootMapObject is MapObjectCollection) {
+      _updateMapObjects(
+        MapObjectDiff(
+          toChange: [
+            rootMapObject.copyWith(
+              mapObjects: _updateMapObjectList(
+                diff: mapObjects,
+                values: rootMapObject.mapObjects,
+              ),
+            )
+          ],
+        ),
+      );
+    } else {
+      throw ArgumentError.value(rootMapObject);
     }
-    if (mapObjectKeyName.isEmpty) throw ArgumentError.value('mapObjectKeyName');
     await _passUpdateMapObjects(
       mapObjectsJson: {
         'toAdd': [],
@@ -288,7 +317,7 @@ class YandexMapController extends ChangeNotifier {
         'toChange': [
           {
             ...rootMapObject.toJson(),
-            mapObjectKeyName: mapObjects.toJson(),
+            'mapObjects': mapObjects.toJson(),
           }
         ]
       },
