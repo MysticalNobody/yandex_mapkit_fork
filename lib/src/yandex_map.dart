@@ -245,7 +245,10 @@ class _YandexMapState extends State<YandexMap> {
 
   Map<String, dynamic> _creationParams() {
     final mapOptions = _yandexMapOptions.toJson();
-    return {'mapOptions': mapOptions, 'mapObjects': {}};
+    return {
+      'mapOptions': mapOptions,
+      'mapObjects': {'toChange': []}
+    };
   }
 }
 
