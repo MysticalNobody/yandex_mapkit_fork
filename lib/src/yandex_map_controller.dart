@@ -167,46 +167,87 @@ class YandexMapController extends ChangeNotifier {
     await _channel.invokeMethod('updateMapOptions', options);
   }
 
-  Future<void> updateMapObjects(MapObjectDiff updates) async {
-    void _setMapObjects() {
-      final toAddIterables = <MapEntry<MapObjectId, MapObject>>[];
-      if (updates.toAdd.isNotEmpty) {
-        toAddIterables.addAll(updates.toAdd.map((e) => MapEntry(e.mapId, e)));
-      }
-      if (updates.toChange.isNotEmpty) {
-        toAddIterables
-            .addAll(updates.toChange.map((e) => MapEntry(e.mapId, e)));
-      }
+  static const _rootControllerKey = 'root_map_object_collection';
 
-      if (toAddIterables.isNotEmpty) {
-        _yandexMapState._mapObjects.addEntries(toAddIterables);
-      }
+  /// Second Level map objects collections.
+  ///
+  /// This method will remove currently existed map objects from root.
+  ///
+  /// The key for the root object is "root_map_object_collection"
+  Future<void> setRootMapObjects({
+    required List<MapObject> mapObjects,
+  }) async {
+    final diff = MapObjectDiff(
+      toAdd: mapObjects,
+      toRemove: _yandexMapState._allMapObjects.values.toList(),
+    );
+    await _passUpdateMapObjects(
+      mapObjectsJson: diff.toJson(),
+    );
+    _updateMapObjects(diff);
+  }
+
+  Future<void> _passUpdateMapObjects<T extends MapObject>({
+    required Map<String, dynamic> mapObjectsJson,
+    int zIndex = 0,
+    bool isVisible = true,
+  }) async {
+    final json = {
+      'id': _rootControllerKey,
+      'zIndex': zIndex,
+      'isVisible': isVisible,
+      'mapObjects': mapObjectsJson,
+      'consumeTapEvents': isVisible,
+    };
+
+    await _channel.invokeMethod('updateMapObjects', {
+      'toChange': json,
+    });
+  }
+
+  void _updateMapObjects(MapObjectDiff diff) {
+    final toAddIterables = <MapEntry<MapObjectId, MapObject>>[];
+    if (diff.toAdd.isNotEmpty) {
+      toAddIterables.addAll(diff.toAdd.map((e) => MapEntry(e.mapId, e)));
+    }
+    if (diff.toChange.isNotEmpty) {
+      toAddIterables.addAll(diff.toChange.map((e) => MapEntry(e.mapId, e)));
     }
 
-    if (updates.resetBeforeAction) {
-      await _channel.invokeMethod(
-        'updateMapObjects',
-        updates.copyWith(
-          toRemove: [
-            ...updates.toRemove,
-            ..._yandexMapState._mapObjects.values
-          ],
-        ).toJson(),
-      );
-      _yandexMapState._mapObjects.clear();
-      _setMapObjects();
-    } else {
-      await _channel.invokeMethod(
-        'updateMapObjects',
-        updates.toJson(),
-      );
-      _setMapObjects();
-      if (updates.toRemove.isNotEmpty) {
-        for (final mapObject in updates.toRemove) {
-          _yandexMapState._mapObjects.remove(mapObject.mapId);
+    if (toAddIterables.isNotEmpty) {
+      _yandexMapState._mapObjects.addEntries(toAddIterables);
+    }
+
+    if (diff.toRemove.isNotEmpty) {
+      for (final mapObject in diff.toRemove) {
+        _yandexMapState._mapObjects.remove(mapObject.mapId);
+      }
+    }
+  }
+
+  /// For example update placemarks in [ClusterizedPlacemarkCollection]
+  Future<void> updateMapObjectsForRootMapObject({
+    /// cars or markers id
+    required MapObjectId id,
+    required MapObjectDiff<MapObject> mapObjects,
+  }) async {
+    // cars or markers
+    final rootMapObject = _yandexMapState._mapObjects[id]!;
+    String mapObjectKeyName = '';
+    if (rootMapObject is ClusterizedPlacemarkCollection) {
+      mapObjectKeyName = 'placemarks';
+    } else if (rootMapObject is MapObjectCollection) {
+      mapObjectKeyName = 'mapObjects';
+    }
+    if (mapObjectKeyName.isEmpty) throw ArgumentError.value('mapObjectKeyName');
+    await _passUpdateMapObjects(
+      mapObjectsJson: {
+        'toChange': {
+          ...rootMapObject.toJson(),
+          mapObjectKeyName: mapObjects,
         }
-      }
-    }
+      },
+    );
   }
 
   Future<dynamic> _handleMethodCall(MethodCall call) async {

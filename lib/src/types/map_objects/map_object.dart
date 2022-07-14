@@ -44,38 +44,32 @@ abstract class MapObject<T> {
   /// Returns all needed data to create this object
   Map<String, dynamic> createJson();
 
-  /// Returns all needed data to update this object
-  Map<String, dynamic> updateJson(MapObject previous);
+  // /// Returns all needed data to update this object
+  // Map<String, dynamic> updateJson(MapObject previous);
 
   /// Returns all needed data to remove this object
   Map<String, dynamic> removeJson();
 }
 
-class MapObjectDiff {
+class MapObjectDiff<T extends MapObject> {
   const MapObjectDiff({
-    required final this.toRemove,
-    required final this.toAdd,
-    required final this.toChange,
-    required final this.resetBeforeAction,
+    final this.toRemove = const [],
+    final this.toAdd = const [],
+    final this.toChange = const [],
   });
   static const empty = MapObjectDiff(
-    resetBeforeAction: true,
     toAdd: [],
     toChange: [],
     toRemove: [],
   );
-  final List<MapObject> toRemove;
-  final List<MapObject> toAdd;
-  final List<MapObject> toChange;
-  final bool resetBeforeAction;
+  final List<T> toAdd;
+  final List<T> toChange;
+  final List<T> toRemove;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        // TODO(arenukvern): remove toList
-        'toAdd': toAdd.map((e) => e.toJson()).toList(),
-        // TODO(arenukvern): remove toList
-        'toChange': toChange.map((e) => e.toJson()).toList(),
-        // TODO(arenukvern): remove toList
-        'toRemove': toRemove.map((e) => e.toJson()).toList(),
+        'toAdd': toAdd.map((e) => e.createJson()).toList(),
+        'toChange': toChange.map((e) => e.createJson()).toList(),
+        'toRemove': toRemove.map((e) => e.removeJson()).toList(),
       };
 
   MapObjectDiff copyWith({
@@ -88,7 +82,6 @@ class MapObjectDiff {
       toRemove: toRemove ?? this.toRemove,
       toAdd: toAdd ?? this.toAdd,
       toChange: toChange ?? this.toChange,
-      resetBeforeAction: resetBeforeAction ?? this.resetBeforeAction,
     );
   }
 }
