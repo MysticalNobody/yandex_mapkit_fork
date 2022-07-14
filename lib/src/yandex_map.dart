@@ -247,7 +247,7 @@ class _YandexMapState extends State<YandexMap> {
     final mapOptions = _yandexMapOptions.toJson();
     return {
       'mapOptions': mapOptions,
-      'mapObjects': {'toChange': []}
+      'mapObjects': {'toChange': [], 'toAdd': [], 'toRemove': []}
     };
   }
 }

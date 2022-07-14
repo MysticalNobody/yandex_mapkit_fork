@@ -204,6 +204,8 @@ class YandexMapController extends ChangeNotifier {
 
     await _channel.invokeMethod('updateMapObjects', {
       'toChange': [json],
+      'toAdd': [],
+      'toRemove': [],
     });
   }
 
@@ -244,6 +246,8 @@ class YandexMapController extends ChangeNotifier {
     if (mapObjectKeyName.isEmpty) throw ArgumentError.value('mapObjectKeyName');
     await _passUpdateMapObjects(
       mapObjectsJson: {
+        'toAdd': [],
+        'toRemove': [],
         'toChange': [
           {
             ...rootMapObject.toJson(),
