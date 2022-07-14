@@ -104,7 +104,8 @@ class MapObjectCollection extends Equatable implements MapObject {
       'mapObjects': mapObjects.map((MapObject p) => p.toJson()).toList(),
       'zIndex': zIndex,
       'consumeTapEvents': consumeTapEvents,
-      'isVisible': isVisible
+      'isVisible': isVisible,
+      'type': runtimeType.toString(),
     };
   }
 

@@ -159,7 +159,8 @@ class ClusterizedPlacemarkCollection extends Equatable implements MapObject {
           placemarks.map((PlacemarkMapObject p) => p.toJson()).toList(),
       'zIndex': zIndex,
       'consumeTapEvents': consumeTapEvents,
-      'isVisible': isVisible
+      'isVisible': isVisible,
+      'type': runtimeType.toString(),
     };
   }
 
