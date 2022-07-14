@@ -42,7 +42,6 @@ part 'src/types/map_objects/circle_map_object.dart';
 part 'src/types/map_objects/clusterized_placemark_collection.dart';
 part 'src/types/map_objects/map_object.dart';
 part 'src/types/map_objects/map_object_collection.dart';
-part 'src/types/map_objects/map_object_updates.dart';
 part 'src/types/map_objects/placemark_map_object.dart';
 part 'src/types/map_objects/polygon_map_object.dart';
 part 'src/types/map_objects/polyline_map_object.dart';

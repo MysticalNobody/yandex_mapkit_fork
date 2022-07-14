@@ -233,7 +233,7 @@ class YandexMapController extends ChangeNotifier {
   }) async {
     // cars or markers
     final rootMapObject = _yandexMapState._mapObjects[id]!;
-    String mapObjectKeyName = '';
+    var mapObjectKeyName = '';
     if (rootMapObject is ClusterizedPlacemarkCollection) {
       mapObjectKeyName = 'placemarks';
     } else if (rootMapObject is MapObjectCollection) {
