@@ -145,9 +145,53 @@ class _YandexMapState extends State<YandexMap> {
   /// This mainly refers to objects that can't be created by normal means
   /// Cluster placemarks, user location objects, etc.
   final _nonRootMapObjects = <MapObjectId, MapObject>{};
+
+  /// To change use [_addMapObjects] [_removeMapObjects]
   final _mapObjects = <MapObjectId, MapObject>{};
+  void _addMapObjects(Iterable<MapEntry<MapObjectId, MapObject>> entries) {
+    for (final entry in entries) {
+      final mapObject = entry.value;
+      if (mapObject is ClusterizedPlacemarkCollection) {
+        for (final placemark in mapObject.placemarks) {
+          _flatteredMapObjects[placemark.mapId] = placemark;
+        }
+      } else if (mapObject is MapObjectCollection) {
+        for (final object in mapObject.mapObjects) {
+          _flatteredMapObjects[object.mapId] = object;
+        }
+      }
+      _flatteredMapObjects[entry.key] = mapObject;
+      _mapObjects[entry.key] = mapObject;
+    }
+  }
+
+  void _removeMapObjects(Iterable<MapObjectId> ids) {
+    for (final id in ids) {
+      if (_mapObjects.containsKey(id)) {
+        final mapObject = _mapObjects[id];
+        if (mapObject is ClusterizedPlacemarkCollection) {
+          for (final placemark in mapObject.placemarks) {
+            _flatteredMapObjects.remove(placemark.mapId);
+          }
+        } else if (mapObject is MapObjectCollection) {
+          for (final object in mapObject.mapObjects) {
+            _flatteredMapObjects.remove(object.mapId);
+          }
+        }
+        _flatteredMapObjects.remove(id);
+        _mapObjects.remove(id);
+      }
+    }
+  }
+
+  /// Should be used to get any map object
+  /// Should be updated with _mapObjects changed
+  ///
+  /// To change use [_addMapObjects] [_removeMapObjects]
+  final _flatteredMapObjects = <MapObjectId, MapObject>{};
+
   Map<MapObjectId, MapObject> get _allMapObjects =>
-      {..._mapObjects, ..._nonRootMapObjects};
+      {..._mapObjects, ..._flatteredMapObjects};
 
   final Completer<YandexMapController> _controller =
       Completer<YandexMapController>();

@@ -219,12 +219,12 @@ class YandexMapController extends ChangeNotifier {
     }
 
     if (toAddIterables.isNotEmpty) {
-      _yandexMapState._mapObjects.addEntries(toAddIterables);
+      _yandexMapState._addMapObjects(toAddIterables);
     }
 
     if (diff.toRemove.isNotEmpty) {
       for (final mapObject in diff.toRemove) {
-        _yandexMapState._mapObjects.remove(mapObject.mapId);
+        _yandexMapState._removeMapObjects([mapObject.mapId]);
       }
     }
   }
