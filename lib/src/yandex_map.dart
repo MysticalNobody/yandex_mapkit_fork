@@ -191,7 +191,7 @@ class _YandexMapState extends State<YandexMap> {
   final _flatteredMapObjects = <MapObjectId, MapObject>{};
 
   Map<MapObjectId, MapObject> get _allMapObjects =>
-      {..._mapObjects, ..._flatteredMapObjects};
+      {..._nonRootMapObjects, ..._flatteredMapObjects};
 
   final Completer<YandexMapController> _controller =
       Completer<YandexMapController>();
