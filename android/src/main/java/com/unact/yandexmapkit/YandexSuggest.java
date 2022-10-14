@@ -5,8 +5,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.yandex.mapkit.search.SearchFactory;
-import com.yandex.mapkit.search.SearchManagerType;
 import com.yandex.mapkit.search.SearchManager;
+import com.yandex.mapkit.search.SearchManagerType;
 import com.yandex.mapkit.search.SuggestSession;
 
 import java.util.HashMap;

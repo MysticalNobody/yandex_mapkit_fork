@@ -8,8 +8,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.yandex.mapkit.Animation;
@@ -25,13 +25,15 @@ import com.yandex.mapkit.layers.ObjectEvent;
 import com.yandex.mapkit.logo.Alignment;
 import com.yandex.mapkit.logo.HorizontalAlignment;
 import com.yandex.mapkit.logo.VerticalAlignment;
+import com.yandex.mapkit.map.CameraListener;
 import com.yandex.mapkit.map.CameraPosition;
+import com.yandex.mapkit.map.CameraUpdateReason;
+import com.yandex.mapkit.map.CircleMapObject;
 import com.yandex.mapkit.map.GeoObjectSelectionMetadata;
 import com.yandex.mapkit.map.InputListener;
 import com.yandex.mapkit.map.MapType;
+import com.yandex.mapkit.map.PlacemarkMapObject;
 import com.yandex.mapkit.map.PointOfView;
-import com.yandex.mapkit.map.CameraUpdateReason;
-import com.yandex.mapkit.map.CameraListener;
 import com.yandex.mapkit.mapview.MapView;
 import com.yandex.mapkit.traffic.TrafficLayer;
 import com.yandex.mapkit.traffic.TrafficLevel;
@@ -191,7 +193,31 @@ public class YandexMapController implements
         result.success(getUserCameraPosition());
         break;
       case "updateUserLocationIcon":
-        result.success(onObjectAdded());
+        onObjectAdded(new UserLocationView() {
+          @NonNull
+          @Override
+          public PlacemarkMapObject getArrow() {
+            return null;
+          }
+
+          @NonNull
+          @Override
+          public PlacemarkMapObject getPin() {
+            return null;
+          }
+
+          @NonNull
+          @Override
+          public CircleMapObject getAccuracyCircle() {
+            return null;
+          }
+
+          @Override
+          public boolean isValid() {
+            return false;
+          }
+        });
+        result.success(null);
         break;  
       case "selectGeoObject":
         selectGeoObject(call);
