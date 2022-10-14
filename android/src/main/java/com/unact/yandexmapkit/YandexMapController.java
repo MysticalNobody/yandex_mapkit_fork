@@ -190,6 +190,9 @@ public class YandexMapController implements
       case "getUserCameraPosition":
         result.success(getUserCameraPosition());
         break;
+      case "updateUserLocationIcon":
+        result.success(onObjectAdded());
+        break;  
       case "selectGeoObject":
         selectGeoObject(call);
         result.success(null);
