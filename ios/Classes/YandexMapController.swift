@@ -20,6 +20,7 @@ public class YandexMapController:
   private var userPinController: PlacemarkMapObjectController?
   private var userArrowController: PlacemarkMapObjectController?
   private var userAccuracyCircleController: CircleMapObjectController?
+  private var tempView: YMKUserLocationView?
   private lazy var rootController: MapObjectCollectionController = {
     MapObjectCollectionController.init(
       root: mapView.mapWindow.map.mapObjects,
@@ -103,6 +104,9 @@ public class YandexMapController:
       result(getUserCameraPosition())
     case "selectGeoObject":
       selectGeoObject(call)
+      result(nil)
+    case "updateUserLocationIcon":
+      onObjectAdded(tempView)
       result(nil)
     case "deselectGeoObject":
       deselectGeoObject()
@@ -504,6 +508,7 @@ public class YandexMapController:
   }
 
   public func onObjectAdded(with view: YMKUserLocationView) {
+    tempView = view
     let arguments = [
       "pinPoint": Utils.pointToJson(view.pin.geometry),
       "arrowPoint": Utils.pointToJson(view.arrow.geometry),
