@@ -82,6 +82,7 @@ public class YandexMapController implements
   private final MapObjectCollectionController rootController;
   private boolean disposed = false;
   private MethodChannel.Result initResult;
+  private UserLocationView tempView;
 
   @SuppressWarnings({"unchecked", "ConstantConditions", "InflateParams"})
   public YandexMapController(
@@ -193,30 +194,7 @@ public class YandexMapController implements
         result.success(getUserCameraPosition());
         break;
       case "updateUserLocationIcon":
-        onObjectAdded(new UserLocationView() {
-          @NonNull
-          @Override
-          public PlacemarkMapObject getArrow() {
-            return null;
-          }
-
-          @NonNull
-          @Override
-          public PlacemarkMapObject getPin() {
-            return null;
-          }
-
-          @NonNull
-          @Override
-          public CircleMapObject getAccuracyCircle() {
-            return null;
-          }
-
-          @Override
-          public boolean isValid() {
-            return false;
-          }
-        });
+        this.onObjectAdded(tempView);
         result.success(null);
         break;  
       case "selectGeoObject":
@@ -667,6 +645,7 @@ public class YandexMapController implements
   @SuppressWarnings({"unchecked", "ConstantConditions"})
   public void onObjectAdded(final UserLocationView view) {
     final YandexMapController self = this;
+    tempView = view;
     Map<String, Object> arguments = new HashMap<>();
     arguments.put("pinPoint", Utils.pointToJson(view.getPin().getGeometry()));
     arguments.put("arrowPoint", Utils.pointToJson(view.getArrow().getGeometry()));
