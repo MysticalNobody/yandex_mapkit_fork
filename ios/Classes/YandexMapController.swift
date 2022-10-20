@@ -514,9 +514,9 @@ public class YandexMapController:
     tempView = view;
     
     let arguments = [
-      "pinPoint": Utils.pointToJson(view!.pin.geometry),
-      "arrowPoint": Utils.pointToJson(view!.arrow.geometry),
-      "circle": Utils.circleToJson(view!.accuracyCircle.geometry)
+      "pinPoint": Utils.pointToJson(view.pin.geometry),
+      "arrowPoint": Utils.pointToJson(view.arrow.geometry),
+      "circle": Utils.circleToJson(view.accuracyCircle.geometry)
     ]
 
     methodChannel.invokeMethod("onUserLocationAdded", arguments: arguments) { result in
