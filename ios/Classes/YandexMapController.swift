@@ -507,39 +507,39 @@ public class YandexMapController:
     mapView.mapWindow.pointOfView = YMKPointOfView.adaptToFocusPointHorizontally
   }
 
-  public func onObjectAdded(with view: YMKUserLocationView) {
-      if (!view.isValid) {
-        return
-      }
+  public func onObjectAdded(with view: YMKUserLocationView?) {
+    if (view == nil) {
+      return
+    }
     tempView = view;
       
     let arguments = [
-      "pinPoint": Utils.pointToJson(view.pin.geometry),
-      "arrowPoint": Utils.pointToJson(view.arrow.geometry),
-      "circle": Utils.circleToJson(view.accuracyCircle.geometry)
+      "pinPoint": Utils.pointToJson(view!.pin.geometry),
+      "arrowPoint": Utils.pointToJson(view!.arrow.geometry),
+      "circle": Utils.circleToJson(view!.accuracyCircle.geometry)
     ]
 
     methodChannel.invokeMethod("onUserLocationAdded", arguments: arguments) { result in
-      if (result is FlutterError || !view.isValid) {
+      if (result is FlutterError || !view!.isValid) {
         return
       }
 
       let params = result as! [String: Any]
 
       self.userPinController = PlacemarkMapObjectController(
-        placemark: view.pin,
+        placemark: view!.pin,
         params: params["pin"] as! [String: Any],
         controller: self
       )
 
       self.userArrowController = PlacemarkMapObjectController(
-        placemark: view.arrow,
+        placemark: view!.arrow,
         params: params["arrow"] as! [String: Any],
         controller: self
       )
 
       self.userAccuracyCircleController = CircleMapObjectController(
-        circle: view.accuracyCircle,
+        circle: view!.accuracyCircle,
         params: params["accuracyCircle"] as! [String: Any],
         controller: self
       )

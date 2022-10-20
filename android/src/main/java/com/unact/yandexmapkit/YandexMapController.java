@@ -645,7 +645,7 @@ public class YandexMapController implements
   @SuppressWarnings({"unchecked", "ConstantConditions"})
   public void onObjectAdded(final UserLocationView view) {
     final YandexMapController self = this;
-    if(!view.isValid){
+    if (view == null) {
        return;
     }
     tempView = view;
