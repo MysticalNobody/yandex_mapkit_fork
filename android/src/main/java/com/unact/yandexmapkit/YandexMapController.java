@@ -645,6 +645,9 @@ public class YandexMapController implements
   @SuppressWarnings({"unchecked", "ConstantConditions"})
   public void onObjectAdded(final UserLocationView view) {
     final YandexMapController self = this;
+    if(!view.isValid){
+       return;
+    }
     tempView = view;
     Map<String, Object> arguments = new HashMap<>();
     arguments.put("pinPoint", Utils.pointToJson(view.getPin().getGeometry()));
