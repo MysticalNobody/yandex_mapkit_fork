@@ -106,7 +106,7 @@ public class YandexMapController:
       selectGeoObject(call)
       result(nil)
     case "updateUserLocationIcon":
-      onObjectAdded(with:tempView?)
+      onObjectAdded(with:tempView)
       result(nil)
     case "deselectGeoObject":
       deselectGeoObject()
