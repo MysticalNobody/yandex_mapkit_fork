@@ -507,7 +507,7 @@ public class YandexMapController:
     mapView.mapWindow.pointOfView = YMKPointOfView.adaptToFocusPointHorizontally
   }
 
-  public func onObjectAdded(with view: YMKUserLocationView?) {
+  public func onObjectAdded(with view: YMKUserLocationView) {
       if (!view.isValid) {
         return
       }
