@@ -107,7 +107,7 @@ public class YandexMapController:
       result(nil)
     case "updateUserLocationIcon":
       if (tempView != nil) {
-        onObjectAdded(with:tempView)
+        onObjectAdded(with:tempView!)
       }
       result(nil)
     case "deselectGeoObject":
@@ -520,26 +520,26 @@ public class YandexMapController:
     ]
 
     methodChannel.invokeMethod("onUserLocationAdded", arguments: arguments) { result in
-      if (result is FlutterError || !view!.isValid) {
+      if (result is FlutterError || !view.isValid) {
         return
       }
 
       let params = result as! [String: Any]
 
       self.userPinController = PlacemarkMapObjectController(
-        placemark: view!.pin,
+        placemark: view.pin,
         params: params["pin"] as! [String: Any],
         controller: self
       )
 
       self.userArrowController = PlacemarkMapObjectController(
-        placemark: view!.arrow,
+        placemark: view.arrow,
         params: params["arrow"] as! [String: Any],
         controller: self
       )
 
       self.userAccuracyCircleController = CircleMapObjectController(
-        circle: view!.accuracyCircle,
+        circle: view.accuracyCircle,
         params: params["accuracyCircle"] as! [String: Any],
         controller: self
       )
