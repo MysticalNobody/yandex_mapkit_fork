@@ -194,7 +194,9 @@ public class YandexMapController implements
         result.success(getUserCameraPosition());
         break;
       case "updateUserLocationIcon":
-        this.onObjectAdded(tempView);
+        if (tempView != null) {
+          this.onObjectAdded(tempView);
+        }
         result.success(null);
         break;  
       case "selectGeoObject":
@@ -644,11 +646,11 @@ public class YandexMapController implements
 
   @SuppressWarnings({"unchecked", "ConstantConditions"})
   public void onObjectAdded(final UserLocationView view) {
+
     final YandexMapController self = this;
-    if (view == null) {
-       return;
-    }
+
     tempView = view;
+
     Map<String, Object> arguments = new HashMap<>();
     arguments.put("pinPoint", Utils.pointToJson(view.getPin().getGeometry()));
     arguments.put("arrowPoint", Utils.pointToJson(view.getArrow().getGeometry()));

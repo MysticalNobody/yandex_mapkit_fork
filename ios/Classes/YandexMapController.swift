@@ -106,7 +106,9 @@ public class YandexMapController:
       selectGeoObject(call)
       result(nil)
     case "updateUserLocationIcon":
-      onObjectAdded(with:tempView)
+      if (tempView != nil) {
+        onObjectAdded(with:tempView)
+      }
       result(nil)
     case "deselectGeoObject":
       deselectGeoObject()
@@ -507,12 +509,10 @@ public class YandexMapController:
     mapView.mapWindow.pointOfView = YMKPointOfView.adaptToFocusPointHorizontally
   }
 
-  public func onObjectAdded(with view: YMKUserLocationView?) {
-    if (view == nil) {
-      return
-    }
+  public func onObjectAdded(with view: YMKUserLocationView) {
+
     tempView = view;
-      
+    
     let arguments = [
       "pinPoint": Utils.pointToJson(view!.pin.geometry),
       "arrowPoint": Utils.pointToJson(view!.arrow.geometry),
