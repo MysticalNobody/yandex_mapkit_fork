@@ -94,7 +94,6 @@ class _MapControlsExampleState extends State<_MapControlsExample> {
             nightModeEnabled: nightModeEnabled,
             fastTapEnabled: fastTapEnabled,
             mode2DEnabled: mode2DEnabled,
-            liteModeEnabled: liteModeEnabled,
             logoAlignment: MapAlignment(horizontal: HorizontalAlignment.left, vertical: VerticalAlignment.bottom),
             focusRect: focusRect,
             mapObjects: mapObjects,
