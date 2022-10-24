@@ -441,10 +441,6 @@ public class YandexMapController:
       map.set2DMode(withEnable: mode2DEnabled.boolValue)
     }
 
-    if let liteModeEnabled = params["liteModeEnabled"] as? NSNumber {
-      map.isLiteModeEnabled = liteModeEnabled.boolValue
-    }
-
     if let modelsEnabled = params["modelsEnabled"] as? NSNumber {
       map.isModelsEnabled = modelsEnabled.boolValue
     }

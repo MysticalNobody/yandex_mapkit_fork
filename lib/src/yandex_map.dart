@@ -27,7 +27,6 @@ class YandexMap extends StatefulWidget {
       this.nightModeEnabled = false,
       this.fastTapEnabled = false,
       this.mode2DEnabled = false,
-      this.liteModeEnabled = false,
       this.logoAlignment = const MapAlignment(
           horizontal: HorizontalAlignment.right,
           vertical: VerticalAlignment.bottom),
@@ -78,9 +77,6 @@ class YandexMap extends StatefulWidget {
   /// true - All loaded tiles start showing the "flatten out" animation; all new tiles do not start 3D animation.
   /// false - All tiles start showing the "rise up" animation.
   final bool mode2DEnabled;
-
-  /// Enables lite rendering mode.
-  final bool liteModeEnabled;
 
   /// Enables detailed 3D models on the map.
   final bool modelsEnabled;
@@ -303,7 +299,6 @@ class _YandexMapOptions {
         nightModeEnabled = map.nightModeEnabled,
         fastTapEnabled = map.fastTapEnabled,
         mode2DEnabled = map.mode2DEnabled,
-        liteModeEnabled = map.liteModeEnabled,
         logoAlignment = map.logoAlignment,
         focusRect = map.focusRect,
         mapType = map.mapType,
@@ -322,8 +317,6 @@ class _YandexMapOptions {
   final bool fastTapEnabled;
 
   final bool mode2DEnabled;
-
-  final bool liteModeEnabled;
 
   final bool modelsEnabled;
 
@@ -344,7 +337,6 @@ class _YandexMapOptions {
       'scrollGesturesEnabled': scrollGesturesEnabled,
       'fastTapEnabled': fastTapEnabled,
       'mode2DEnabled': mode2DEnabled,
-      'liteModeEnabled': liteModeEnabled,
       'modelsEnabled': modelsEnabled,
       'logoAlignment': logoAlignment.toJson(),
       'focusRect': focusRect?.toJson(),
