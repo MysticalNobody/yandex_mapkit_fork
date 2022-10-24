@@ -27,7 +27,6 @@ class YandexMap extends StatefulWidget {
       this.nightModeEnabled = false,
       this.fastTapEnabled = false,
       this.mode2DEnabled = false,
-      this.indoorEnabled = false,
       this.liteModeEnabled = false,
       this.logoAlignment = const MapAlignment(
           horizontal: HorizontalAlignment.right,
@@ -79,9 +78,6 @@ class YandexMap extends StatefulWidget {
   /// true - All loaded tiles start showing the "flatten out" animation; all new tiles do not start 3D animation.
   /// false - All tiles start showing the "rise up" animation.
   final bool mode2DEnabled;
-
-  /// Enables indoor plans on the map.
-  final bool indoorEnabled;
 
   /// Enables lite rendering mode.
   final bool liteModeEnabled;
@@ -307,7 +303,6 @@ class _YandexMapOptions {
         nightModeEnabled = map.nightModeEnabled,
         fastTapEnabled = map.fastTapEnabled,
         mode2DEnabled = map.mode2DEnabled,
-        indoorEnabled = map.indoorEnabled,
         liteModeEnabled = map.liteModeEnabled,
         logoAlignment = map.logoAlignment,
         focusRect = map.focusRect,
@@ -327,8 +322,6 @@ class _YandexMapOptions {
   final bool fastTapEnabled;
 
   final bool mode2DEnabled;
-
-  final bool indoorEnabled;
 
   final bool liteModeEnabled;
 
@@ -351,7 +344,6 @@ class _YandexMapOptions {
       'scrollGesturesEnabled': scrollGesturesEnabled,
       'fastTapEnabled': fastTapEnabled,
       'mode2DEnabled': mode2DEnabled,
-      'indoorEnabled': indoorEnabled,
       'liteModeEnabled': liteModeEnabled,
       'modelsEnabled': modelsEnabled,
       'logoAlignment': logoAlignment.toJson(),
