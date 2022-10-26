@@ -12,9 +12,9 @@ public class SwiftYandexMapkitPlugin: NSObject, FlutterPlugin {
 
     YMKMapKit.sharedInstance().onStart()
 
-    YandexSearch.register(with: registrar)
-    YandexSuggest.register(with: registrar)
-    YandexDriving.register(with: registrar)
-    YandexBicycle.register(with: registrar)
+    // YandexSearch.register(with: registrar)
+    // YandexSuggest.register(with: registrar)
+    // YandexDriving.register(with: registrar)
+    // YandexBicycle.register(with: registrar)
   }
 }
