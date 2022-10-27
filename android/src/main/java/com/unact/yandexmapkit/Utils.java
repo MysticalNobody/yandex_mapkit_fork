@@ -68,52 +68,52 @@ public class Utils {
     );
   }
 
-  public static DrivingOptions drivingOptionsFromJson(Map<String, Object> json) {
-    return new DrivingOptions(
-      (Double) json.get("initialAzimuth"),
-      (Integer) json.get("routesCount"),
-      (Boolean) json.get("avoidTolls"),
-      null,
-      null
-    );
-  }
+//  public static DrivingOptions drivingOptionsFromJson(Map<String, Object> json) {
+//    return new DrivingOptions(
+//      (Double) json.get("initialAzimuth"),
+//      (Integer) json.get("routesCount"),
+//      (Boolean) json.get("avoidTolls"),
+//      null,
+//      null
+//    );
+//  }
 
-  @SuppressWarnings({"unchecked", "ConstantConditions"})
-  public static SearchOptions searchOptionsFromJson(Map<String, Object> json) {
-    Point userPosition = json.get("userPosition") != null ?
-      pointFromJson((Map<String, Object>) json.get("userPosition")) :
-      null;
+//  @SuppressWarnings({"unchecked", "ConstantConditions"})
+//  public static SearchOptions searchOptionsFromJson(Map<String, Object> json) {
+//    Point userPosition = json.get("userPosition") != null ?
+//      pointFromJson((Map<String, Object>) json.get("userPosition")) :
+//      null;
+//
+//    return new SearchOptions(
+//      ((Number) json.get("searchType")).intValue(),
+//      (Integer) json.get("resultPageSize"),
+//      ((Number) json.get("searchSnippet")).intValue(),
+//      new ArrayList<String>(),
+//      userPosition,
+//      (String) json.get("origin"),
+//      (String) json.get("directPageId"),
+//      (String) json.get("appleCtx"),
+//      (Boolean) json.get("geometry"),
+//      (String) json.get("advertPageId"),
+//      (Boolean) json.get("disableSpellingCorrection"),
+//      null
+//    );
+//  }
 
-    return new SearchOptions(
-      ((Number) json.get("searchType")).intValue(),
-      (Integer) json.get("resultPageSize"),
-      ((Number) json.get("searchSnippet")).intValue(),
-      new ArrayList<String>(),
-      userPosition,
-      (String) json.get("origin"),
-      (String) json.get("directPageId"),
-      (String) json.get("appleCtx"),
-      (Boolean) json.get("geometry"),
-      (String) json.get("advertPageId"),
-      (Boolean) json.get("disableSpellingCorrection"),
-      null
-    );
-  }
+//  @SuppressWarnings({"unchecked", "ConstantConditions"})
+//  public static SuggestOptions suggestOptionsFromJson(Map<String, Object> json) {
+//    Point userPosition = json.get("userPosition") != null ?
+//      pointFromJson((Map<String, Object>) json.get("userPosition")) :
+//      null;
+//
+//    return new SuggestOptions(
+//      ((Number) json.get("suggestType")).intValue(),
+//      userPosition,
+//      ((Boolean) json.get("suggestWords"))
+//    );
+//  }
 
-  @SuppressWarnings({"unchecked", "ConstantConditions"})
-  public static SuggestOptions suggestOptionsFromJson(Map<String, Object> json) {
-    Point userPosition = json.get("userPosition") != null ?
-      pointFromJson((Map<String, Object>) json.get("userPosition")) :
-      null;
-
-    return new SuggestOptions(
-      ((Number) json.get("suggestType")).intValue(),
-      userPosition,
-      ((Boolean) json.get("suggestWords"))
-    );
-  }
-
-  @SuppressWarnings({"unchecked", "ConstantConditions"})
+//  @SuppressWarnings({"unchecked", "ConstantConditions"})
   public static Geometry geometryFromJson(Map<String, Object> json) {
     if (json.get("point") != null) {
       return Geometry.fromPoint(pointFromJson((Map<String, Object>) json.get("point")));
