@@ -57,7 +57,7 @@ class MapObjectDiff<T extends MapObject> {
     final this.toAdd = const [],
     final this.toChange = const [],
   });
-  static const empty = MapObjectDiff(
+  static const empty = MapObjectDiff<PlacemarkMapObject>(
     toAdd: [],
     toChange: [],
     toRemove: [],
