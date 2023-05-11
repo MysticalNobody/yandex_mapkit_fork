@@ -8,8 +8,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.yandex.mapkit.Animation;
@@ -25,15 +25,13 @@ import com.yandex.mapkit.layers.ObjectEvent;
 import com.yandex.mapkit.logo.Alignment;
 import com.yandex.mapkit.logo.HorizontalAlignment;
 import com.yandex.mapkit.logo.VerticalAlignment;
-import com.yandex.mapkit.map.CameraListener;
 import com.yandex.mapkit.map.CameraPosition;
-import com.yandex.mapkit.map.CameraUpdateReason;
-import com.yandex.mapkit.map.CircleMapObject;
 import com.yandex.mapkit.map.GeoObjectSelectionMetadata;
 import com.yandex.mapkit.map.InputListener;
 import com.yandex.mapkit.map.MapType;
-import com.yandex.mapkit.map.PlacemarkMapObject;
 import com.yandex.mapkit.map.PointOfView;
+import com.yandex.mapkit.map.CameraUpdateReason;
+import com.yandex.mapkit.map.CameraListener;
 import com.yandex.mapkit.mapview.MapView;
 import com.yandex.mapkit.traffic.TrafficLayer;
 import com.yandex.mapkit.traffic.TrafficLevel;
@@ -82,7 +80,6 @@ public class YandexMapController implements
   private final MapObjectCollectionController rootController;
   private boolean disposed = false;
   private MethodChannel.Result initResult;
-  private UserLocationView tempView;
 
   @SuppressWarnings({"unchecked", "ConstantConditions", "InflateParams"})
   public YandexMapController(
@@ -193,12 +190,6 @@ public class YandexMapController implements
       case "getUserCameraPosition":
         result.success(getUserCameraPosition());
         break;
-      case "updateUserLocationIcon":
-        if (tempView != null) {
-          this.onObjectAdded(tempView);
-        }
-        result.success(null);
-        break;  
       case "selectGeoObject":
         selectGeoObject(call);
         result.success(null);
@@ -638,11 +629,7 @@ public class YandexMapController implements
 
   @SuppressWarnings({"unchecked", "ConstantConditions"})
   public void onObjectAdded(final UserLocationView view) {
-
     final YandexMapController self = this;
-
-    tempView = view;
-
     Map<String, Object> arguments = new HashMap<>();
     arguments.put("pinPoint", Utils.pointToJson(view.getPin().getGeometry()));
     arguments.put("arrowPoint", Utils.pointToJson(view.getArrow().getGeometry()));
@@ -651,7 +638,7 @@ public class YandexMapController implements
     methodChannel.invokeMethod("onUserLocationAdded", arguments, new MethodChannel.Result() {
       @Override
       public void success(@Nullable Object result) {
-        if (result instanceof FlutterException || !view.isValid()) {
+        if (result instanceof FlutterException) {
           return;
         }
 
@@ -764,7 +751,7 @@ public class YandexMapController implements
 
     methodChannel.invokeMethod("onObjectTap", arguments);
 
-    return true;
+    return false;
   }
 
   public void mapObjectDragStart(@NonNull String id) {

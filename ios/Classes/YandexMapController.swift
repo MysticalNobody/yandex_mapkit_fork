@@ -20,7 +20,6 @@ public class YandexMapController:
   private var userPinController: PlacemarkMapObjectController?
   private var userArrowController: PlacemarkMapObjectController?
   private var userAccuracyCircleController: CircleMapObjectController?
-  private var tempView: YMKUserLocationView?
   private lazy var rootController: MapObjectCollectionController = {
     MapObjectCollectionController.init(
       root: mapView.mapWindow.map.mapObjects,
@@ -32,7 +31,7 @@ public class YandexMapController:
 
   public required init(id: Int64, frame: CGRect, registrar: FlutterPluginRegistrar, params: [String: Any]) {
     self.pluginRegistrar = registrar
-    self.mapView = FLYMKMapView(frame: frame, vulkanPreferred: true)
+    self.mapView = FLYMKMapView(frame: frame, vulkanPreferred: YandexMapController.isM1Simulator())
     self.methodChannel = FlutterMethodChannel(
       name: "yandex_mapkit/yandex_map_\(id)",
       binaryMessenger: registrar.messenger()
@@ -104,11 +103,6 @@ public class YandexMapController:
       result(getUserCameraPosition())
     case "selectGeoObject":
       selectGeoObject(call)
-      result(nil)
-    case "updateUserLocationIcon":
-      if (tempView != nil) {
-        onObjectAdded(with:tempView!)
-      }
       result(nil)
     case "deselectGeoObject":
       deselectGeoObject()
@@ -252,6 +246,10 @@ public class YandexMapController:
     ]
 
     return arguments
+  }
+
+  private static func isM1Simulator() -> Bool {
+    return (TARGET_IPHONE_SIMULATOR & TARGET_CPU_ARM64) != 0
   }
 
   private func hasLocationPermission() -> Bool {
@@ -502,9 +500,6 @@ public class YandexMapController:
   }
 
   public func onObjectAdded(with view: YMKUserLocationView) {
-
-    tempView = view;
-    
     let arguments = [
       "pinPoint": Utils.pointToJson(view.pin.geometry),
       "arrowPoint": Utils.pointToJson(view.arrow.geometry),
@@ -512,7 +507,7 @@ public class YandexMapController:
     ]
 
     methodChannel.invokeMethod("onUserLocationAdded", arguments: arguments) { result in
-      if (result is FlutterError || !view.isValid) {
+      if (result is FlutterError) {
         return
       }
 
@@ -605,7 +600,7 @@ public class YandexMapController:
 
     methodChannel.invokeMethod("onObjectTap", arguments: arguments)
 
-    return true
+    return false
   }
 
   internal func mapObjectTap(id: String, point: YMKPoint) {

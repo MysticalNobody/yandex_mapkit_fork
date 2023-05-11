@@ -104,22 +104,37 @@ class MapObjectCollection extends Equatable implements MapObject {
       'mapObjects': mapObjects.map((MapObject p) => p.toJson()).toList(),
       'zIndex': zIndex,
       'consumeTapEvents': consumeTapEvents,
-      'isVisible': isVisible,
-      'type': runtimeType.toString(),
+      'isVisible': isVisible
     };
   }
 
   @override
-  Map<String, dynamic> createJson() {
+  Map<String, dynamic> _createJson() {
     return toJson()
       ..addAll({
         'type': runtimeType.toString(),
-        'mapObjects': MapObjectDiff(toAdd: mapObjects).toJson()
+        'mapObjects':
+            MapObjectUpdates.from(<MapObject>{...[]}, mapObjects.toSet())
+                .toJson()
       });
   }
 
   @override
-  Map<String, dynamic> removeJson() {
+  Map<String, dynamic> _updateJson(MapObject previous) {
+    assert(mapId == previous.mapId);
+
+    return toJson()
+      ..addAll({
+        'type': runtimeType.toString(),
+        'mapObjects': MapObjectUpdates.from(
+                (previous as MapObjectCollection).mapObjects.toSet(),
+                mapObjects.toSet())
+            .toJson()
+      });
+  }
+
+  @override
+  Map<String, dynamic> _removeJson() {
     return {'id': mapId.value, 'type': runtimeType.toString()};
   }
 

@@ -57,27 +57,29 @@ class CircleMapObject extends Equatable implements MapObject<CircleMapObject> {
   /// with the camera position's tilt at 0 and a scale factor of 1
   final double strokeWidth;
 
-  CircleMapObject copyWith(
-      {Circle? circle,
-      bool? isGeodesic,
-      double? zIndex,
-      TapCallback<CircleMapObject>? onTap,
-      bool? consumeTapEvents,
-      bool? isVisible,
-      Color? fillColor,
-      Color? strokeColor,
-      double? strokeWidth}) {
+  CircleMapObject copyWith({
+    Circle? circle,
+    bool? isGeodesic,
+    double? zIndex,
+    TapCallback<CircleMapObject>? onTap,
+    bool? consumeTapEvents,
+    bool? isVisible,
+    Color? fillColor,
+    Color? strokeColor,
+    double? strokeWidth
+  }) {
     return CircleMapObject(
-        mapId: mapId,
-        circle: circle ?? this.circle,
-        isGeodesic: isGeodesic ?? this.isGeodesic,
-        zIndex: zIndex ?? this.zIndex,
-        onTap: onTap ?? this.onTap,
-        consumeTapEvents: consumeTapEvents ?? this.consumeTapEvents,
-        isVisible: isVisible ?? this.isVisible,
-        fillColor: fillColor ?? this.fillColor,
-        strokeColor: strokeColor ?? this.strokeColor,
-        strokeWidth: strokeWidth ?? this.strokeWidth);
+      mapId: mapId,
+      circle: circle ?? this.circle,
+      isGeodesic: isGeodesic ?? this.isGeodesic,
+      zIndex: zIndex ?? this.zIndex,
+      onTap: onTap ?? this.onTap,
+      consumeTapEvents: consumeTapEvents ?? this.consumeTapEvents,
+      isVisible: isVisible ?? this.isVisible,
+      fillColor: fillColor ?? this.fillColor,
+      strokeColor: strokeColor ?? this.strokeColor,
+      strokeWidth: strokeWidth ?? this.strokeWidth
+    );
   }
 
   @override
@@ -142,42 +144,45 @@ class CircleMapObject extends Equatable implements MapObject<CircleMapObject> {
       'strokeColor': strokeColor.value,
       'strokeWidth': strokeWidth,
       'fillColor': fillColor.value,
-      'type': runtimeType.toString(),
     };
   }
 
   @override
-  Map<String, dynamic> createJson() {
-    return toJson()..addAll({'type': runtimeType.toString()});
+  Map<String, dynamic> _createJson() {
+    return toJson()..addAll({
+      'type': runtimeType.toString()
+    });
   }
 
   @override
-  Map<String, dynamic> updateJson(MapObject previous) {
+  Map<String, dynamic> _updateJson(MapObject previous) {
     assert(mapId == previous.mapId);
 
-    return toJson()
-      ..addAll({
-        'type': runtimeType.toString(),
-      });
+    return toJson()..addAll({
+      'type': runtimeType.toString(),
+    });
   }
 
   @override
-  Map<String, dynamic> removeJson() {
-    return {'id': mapId.value, 'type': runtimeType.toString()};
+  Map<String, dynamic> _removeJson() {
+    return {
+      'id': mapId.value,
+      'type': runtimeType.toString()
+    };
   }
 
   @override
   List<Object> get props => <Object>[
-        mapId,
-        circle,
-        isGeodesic,
-        zIndex,
-        consumeTapEvents,
-        isVisible,
-        strokeColor,
-        strokeWidth,
-        fillColor,
-      ];
+    mapId,
+    circle,
+    isGeodesic,
+    zIndex,
+    consumeTapEvents,
+    isVisible,
+    strokeColor,
+    strokeWidth,
+    fillColor,
+  ];
 
   @override
   bool get stringify => true;

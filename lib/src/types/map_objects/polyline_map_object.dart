@@ -2,24 +2,25 @@ part of yandex_mapkit;
 
 /// Collection of points connected by lines to be displayed on [YandexMap]
 class PolylineMapObject extends Equatable implements MapObject {
-  PolylineMapObject(
-      {required this.mapId,
-      required this.polyline,
-      this.zIndex = 0.0,
-      this.onTap,
-      this.consumeTapEvents = false,
-      this.isVisible = true,
-      this.strokeColor = const Color(0xFF0066FF),
-      this.strokeWidth = 5.0,
-      this.outlineColor = const Color(0x00000000),
-      this.outlineWidth = 0.0,
-      this.dashLength = 0.0,
-      this.dashOffset = 0.0,
-      this.gapLength = 0.0,
-      this.turnRadius = 10.0,
-      this.arcApproximationStep = 12.0,
-      this.gradientLength = 0,
-      this.isInnerOutlineEnabled = false});
+  PolylineMapObject({
+    required this.mapId,
+    required this.polyline,
+    this.zIndex = 0.0,
+    this.onTap,
+    this.consumeTapEvents = false,
+    this.isVisible = true,
+    this.strokeColor = const Color(0xFF0066FF),
+    this.strokeWidth = 5.0,
+    this.outlineColor = const Color(0x00000000),
+    this.outlineWidth = 0.0,
+    this.dashLength = 0.0,
+    this.dashOffset = 0.0,
+    this.gapLength = 0.0,
+    this.turnRadius = 10.0,
+    this.arcApproximationStep = 12.0,
+    this.gradientLength = 0,
+    this.isInnerOutlineEnabled = false
+  });
 
   /// The geometry of the map object.
   final Polyline polyline;
@@ -119,8 +120,7 @@ class PolylineMapObject extends Equatable implements MapObject {
       turnRadius: turnRadius ?? this.turnRadius,
       arcApproximationStep: arcApproximationStep ?? this.arcApproximationStep,
       gradientLength: gradientLength ?? this.gradientLength,
-      isInnerOutlineEnabled:
-          isInnerOutlineEnabled ?? this.isInnerOutlineEnabled,
+      isInnerOutlineEnabled: isInnerOutlineEnabled ?? this.isInnerOutlineEnabled,
     );
   }
 
@@ -200,39 +200,52 @@ class PolylineMapObject extends Equatable implements MapObject {
       'arcApproximationStep': arcApproximationStep,
       'gradientLength': gradientLength,
       'isInnerOutlineEnabled': isInnerOutlineEnabled,
-      'type': runtimeType.toString(),
     };
   }
 
   @override
-  Map<String, dynamic> createJson() {
-    return toJson()..addAll({'type': runtimeType.toString()});
+  Map<String, dynamic> _createJson() {
+    return toJson()..addAll({
+      'type': runtimeType.toString()
+    });
   }
 
   @override
-  Map<String, dynamic> removeJson() {
-    return {'id': mapId.value, 'type': runtimeType.toString()};
+  Map<String, dynamic> _updateJson(MapObject previous) {
+    assert(mapId == previous.mapId);
+
+    return toJson()..addAll({
+      'type': runtimeType.toString(),
+    });
+  }
+
+  @override
+  Map<String, dynamic> _removeJson() {
+    return {
+      'id': mapId.value,
+      'type': runtimeType.toString()
+    };
   }
 
   @override
   List<Object> get props => <Object>[
-        mapId,
-        polyline,
-        zIndex,
-        consumeTapEvents,
-        isVisible,
-        strokeColor,
-        strokeWidth,
-        outlineColor,
-        outlineWidth,
-        dashLength,
-        dashOffset,
-        gapLength,
-        turnRadius,
-        arcApproximationStep,
-        gradientLength,
-        isInnerOutlineEnabled,
-      ];
+    mapId,
+    polyline,
+    zIndex,
+    consumeTapEvents,
+    isVisible,
+    strokeColor,
+    strokeWidth,
+    outlineColor,
+    outlineWidth,
+    dashLength,
+    dashOffset,
+    gapLength,
+    turnRadius,
+    arcApproximationStep,
+    gradientLength,
+    isInnerOutlineEnabled,
+  ];
 
   @override
   bool get stringify => true;

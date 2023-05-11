@@ -18,7 +18,6 @@ class YandexMap extends StatefulWidget {
   const YandexMap(
       {Key? key,
       this.gestureRecognizers = const <Factory<OneSequenceGestureRecognizer>>{},
-      this.mapObjects = const [],
       this.tiltGesturesEnabled = true,
       this.zoomGesturesEnabled = true,
       this.rotateGesturesEnabled = true,
@@ -49,9 +48,6 @@ class YandexMap extends StatefulWidget {
   /// When this set is empty, the map will only handle pointer events for gestures that
   /// were not claimed by any other gesture recognizer.
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
-
-  /// Map objects to show on map
-  final List<MapObject> mapObjects;
 
   /// Enable tilt gestures, such as parallel pan with two fingers.
   final bool tiltGesturesEnabled;
@@ -132,59 +128,6 @@ class YandexMap extends StatefulWidget {
 class _YandexMapState extends State<YandexMap> {
   late _YandexMapOptions _yandexMapOptions;
 
-  /// All [MapObject] which were created natively
-  ///
-  /// This mainly refers to objects that can't be created by normal means
-  /// Cluster placemarks, user location objects, etc.
-  final _nonRootMapObjects = <MapObjectId, MapObject>{};
-
-  /// To change use [_addMapObjects] [_removeMapObjects]
-  final _mapObjects = <MapObjectId, MapObject>{};
-  void _addMapObjects(Iterable<MapEntry<MapObjectId, MapObject>> entries) {
-    for (final entry in entries) {
-      final mapObject = entry.value;
-      if (mapObject is ClusterizedPlacemarkCollection) {
-        for (final placemark in mapObject.placemarks) {
-          _flatteredMapObjects[placemark.mapId] = placemark;
-        }
-      } else if (mapObject is MapObjectCollection) {
-        for (final object in mapObject.mapObjects) {
-          _flatteredMapObjects[object.mapId] = object;
-        }
-      }
-      _flatteredMapObjects[entry.key] = mapObject;
-      _mapObjects[entry.key] = mapObject;
-    }
-  }
-
-  void _removeMapObjects(Iterable<MapObjectId> ids) {
-    for (final id in ids) {
-      if (_mapObjects.containsKey(id)) {
-        final mapObject = _mapObjects[id];
-        if (mapObject is ClusterizedPlacemarkCollection) {
-          for (final placemark in mapObject.placemarks) {
-            _flatteredMapObjects.remove(placemark.mapId);
-          }
-        } else if (mapObject is MapObjectCollection) {
-          for (final object in mapObject.mapObjects) {
-            _flatteredMapObjects.remove(object.mapId);
-          }
-        }
-        _flatteredMapObjects.remove(id);
-        _mapObjects.remove(id);
-      }
-    }
-  }
-
-  /// Should be used to get any map object
-  /// Should be updated with _mapObjects changed
-  ///
-  /// To change use [_addMapObjects] [_removeMapObjects]
-  final _flatteredMapObjects = <MapObjectId, MapObject>{};
-
-  Map<MapObjectId, MapObject> get _allMapObjects =>
-      {..._nonRootMapObjects, ..._flatteredMapObjects};
-
   final Completer<YandexMapController> _controller =
       Completer<YandexMapController>();
 
@@ -218,7 +161,8 @@ class _YandexMapState extends State<YandexMap> {
 
     final controller = await _controller.future;
 
-    await controller._updateMapOptions(updates);
+    // ignore: unawaited_futures
+    controller._updateMapOptions(updates);
     _yandexMapOptions = newOptions;
   }
 
@@ -237,7 +181,7 @@ class _YandexMapState extends State<YandexMap> {
               );
             },
             onCreatePlatformView: (PlatformViewCreationParams params) {
-              return PlatformViewsService.initSurfaceAndroidView(
+              return PlatformViewsService.initExpensiveAndroidView(
                 id: params.id,
                 viewType: YandexMap._viewType,
                 layoutDirection: TextDirection.ltr,
@@ -281,10 +225,17 @@ class _YandexMapState extends State<YandexMap> {
 
   Map<String, dynamic> _creationParams() {
     final mapOptions = _yandexMapOptions.toJson();
-    return {
-      'mapOptions': mapOptions,
-      'mapObjects': {'toChange': [], 'toAdd': [], 'toRemove': []}
-    };
+    final mapObjects = MapObjectUpdates.from(
+      <MapObjectCollection>{},
+      <MapObjectCollection>{
+        MapObjectCollection(
+          mapId: MapObjectId('root_map_object_collection'),
+          mapObjects: [],
+        ),
+      },
+    ).toJson();
+
+    return {'mapOptions': mapOptions, 'mapObjects': mapObjects};
   }
 }
 

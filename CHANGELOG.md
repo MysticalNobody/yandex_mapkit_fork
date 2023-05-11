@@ -1,3 +1,41 @@
+## 3.2.0
+
+* Update and lock YandexMapkit version to 4.2.2-full for iOS and Android
+* Set minimum flutter version to 3.0.0
+* Fix incorrect example
+* Fix crashes on cluster styling
+* Fix incorrect Android view initialization
+
+## 3.1.1
+
+* Fix not working for flutter versions less than 3.0.0
+
+## 3.1.0
+
+* Update and lock YandexMapkit version to 4.2.0-full for iOS and Android
+* **Breaking change** `SearchOptions.searchSnippet` has been removed.
+* **Breaking change** `SearchOptions.directPageId` has been removed.
+* **Breaking change** `SearchOptions.appleCtx` has been removed.
+* **Breaking change** `SearchOptions.advertPageId` has been removed.
+* **Breaking change** `YandexMap.indoorEnabled` has been removed.
+* **Breaking change** `YandexMap.liteModeEnabled` has been removed.
+* Added new options to `DrivingOptions`
+
+## 3.0.3
+
+* Fix clusters not always showing [#255]
+
+## 3.0.2
+
+* Fix state updating incorrectly
+* Fix `YandexMap.onMapTap` not always working
+
+## 3.0.1
+
+* Fix early initialization finish on iOS and Android
+* Implement `YandexBicycle`
+* Fix map initialization for iOS arm64 simulator
+
 ## 3.0.0
 
 * Update and lock YandexMapkit version to 4.1.0-full for iOS and Android

@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_annotation_target
-
 part of yandex_mapkit;
 
 /// Uniquely identifies object an among all [MapObjectCollection.mapObjects] of a specific type.
@@ -9,7 +7,9 @@ class MapObjectId extends Equatable {
   final String value;
 
   @override
-  List<Object> get props => <Object>[value];
+  List<Object> get props => <Object>[
+    value
+  ];
 
   @override
   bool get stringify => true;
@@ -42,46 +42,11 @@ abstract class MapObject<T> {
   Map<String, dynamic> toJson();
 
   /// Returns all needed data to create this object
-  Map<String, dynamic> createJson();
+  Map<String, dynamic> _createJson();
 
-  // /// Returns all needed data to update this object
-  // Map<String, dynamic> updateJson(MapObject previous);
+  /// Returns all needed data to update this object
+  Map<String, dynamic> _updateJson(MapObject previous);
 
   /// Returns all needed data to remove this object
-  Map<String, dynamic> removeJson();
-}
-
-class MapObjectDiff<T extends MapObject> {
-  const MapObjectDiff({
-    final this.toRemove = const [],
-    final this.toAdd = const [],
-    final this.toChange = const [],
-  });
-  static const empty = MapObjectDiff<PlacemarkMapObject>(
-    toAdd: [],
-    toChange: [],
-    toRemove: [],
-  );
-  final List<T> toAdd;
-  final List<T> toChange;
-  final List<T> toRemove;
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'toAdd': toAdd.map((e) => e.createJson()).toList(),
-        'toChange': toChange.map((e) => e.createJson()).toList(),
-        'toRemove': toRemove.map((e) => e.removeJson()).toList(),
-      };
-
-  MapObjectDiff copyWith({
-    List<MapObject>? toRemove,
-    List<MapObject>? toAdd,
-    List<MapObject>? toChange,
-    bool? resetBeforeAction,
-  }) {
-    return MapObjectDiff(
-      toRemove: toRemove ?? this.toRemove,
-      toAdd: toAdd ?? this.toAdd,
-      toChange: toChange ?? this.toChange,
-    );
-  }
+  Map<String, dynamic> _removeJson();
 }
