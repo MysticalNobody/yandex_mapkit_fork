@@ -314,7 +314,7 @@ class YandexMapController extends ChangeNotifier {
         mapId: MapObjectId('user_location_pin'),
       ),
       marker.copyWith(
-        mapId: MapObjectId('arrowPoint'),
+        mapId: MapObjectId('user_location_arrow'),
       ),
     ]);
   }
