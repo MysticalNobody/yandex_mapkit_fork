@@ -191,21 +191,21 @@ class YandexMapController extends ChangeNotifier {
   }
 
   // /// Changes map objects on the map
-  // Future<void> updateMapObjects({
-  //   Set<MapObject>? toAdd,
-  //   Set<MapObject>? toChange,
-  //   Set<MapObject>? toRemove,
-  // }) async {
-  //   final toRemoveItems = [...(toRemove ?? {}), ...(toChange ?? {})];
-  //   _mapObjectCollection.mapObjects.removeWhere(toRemoveItems.contains);
-  //   _mapObjectCollection.mapObjects
-  //       .addAll([...(toAdd ?? {}), ...(toChange ?? {})]);
-  //   await _channel.invokeMethod('updateMapObjects', {
-  //     'toAdd': toAdd?.map((el) => el._createJson()).toList() ?? [],
-  //     'toChange': toChange?.map((el) => el._createJson()).toList() ?? [],
-  //     'toRemove': toRemove?.map((el) => el._removeJson()).toList() ?? [],
-  //   });
-  // }
+  Future<void> updateMapObjectsFromArrays({
+    Set<MapObject>? toAdd,
+    Set<MapObject>? toChange,
+    Set<MapObject>? toRemove,
+  }) async {
+    final toRemoveItems = [...(toRemove ?? {}), ...(toChange ?? {})];
+    _mapObjectCollection.mapObjects.removeWhere(toRemoveItems.contains);
+    _mapObjectCollection.mapObjects
+        .addAll([...(toAdd ?? {}), ...(toChange ?? {})]);
+    await _channel.invokeMethod('updateMapObjects', {
+      'toAdd': toAdd?.map((el) => el._createJson()).toList() ?? [],
+      'toChange': toChange?.map((el) => el._createJson()).toList() ?? [],
+      'toRemove': toRemove?.map((el) => el._removeJson()).toList() ?? [],
+    });
+  }
 
   Future<dynamic> _handleMethodCall(MethodCall call) async {
     switch (call.method) {
@@ -303,6 +303,22 @@ class YandexMapController extends ChangeNotifier {
       'arrow': newArrow.toJson(),
       'accuracyCircle': newAccuracyCircle.toJson()
     };
+  }
+
+  void updateSelfMarker(PlacemarkMapObject marker) {
+    _nonRootMapObjects
+        .remove(_findMapObject(_allMapObjects, 'user_location_pin'));
+    _nonRootMapObjects.remove(_findMapObject(_allMapObjects, 'arrowPoint'));
+    _nonRootMapObjects.remove(_findMapObject(_allMapObjects, 'circle'));
+
+    _nonRootMapObjects.addAll([
+      marker.copyWith(
+        mapId: MapObjectId('user_location_pin'),
+      ),
+      marker.copyWith(
+        mapId: MapObjectId('arrowPoint'),
+      ),
+    ]);
   }
 
   void _onClustersRemoved(dynamic arguments) {
