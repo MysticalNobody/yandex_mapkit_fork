@@ -288,9 +288,7 @@ class YandexMapController extends ChangeNotifier {
         circle: Circle._fromJson(arguments['circle']));
     final view = UserLocationView._(
         arrow: arrow, pin: pin, accuracyCircle: accuracyCircle);
-    final newView = _yandexMapState.widget.onUserLocationAdded != null
-        ? (await _yandexMapState.widget.onUserLocationAdded!(view))
-        : view;
+    final newView =(await _yandexMapState.widget.onUserLocationAdded!(view));
     final newPin = newView?.pin.dup(pin.mapId) ?? pin;
     final newArrow = newView?.arrow.dup(arrow.mapId) ?? arrow;
     final newAccuracyCircle =
@@ -305,7 +303,7 @@ class YandexMapController extends ChangeNotifier {
     };
   }
 
-  void updateSelfMarker(PlacemarkMapObject marker) {
+  Future<void> updateSelfMarker(PlacemarkMapObject marker) async {
     _nonRootMapObjects
         .remove(_findMapObject(_allMapObjects, 'user_location_pin'));
     _nonRootMapObjects.remove(_findMapObject(_allMapObjects, 'arrowPoint'));
