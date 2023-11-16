@@ -2,7 +2,7 @@ part of yandex_mapkit;
 
 /// A collection of [MapObject] to be displayed on [YandexMap]
 /// All [mapObjects] must be unique, i.e. each [MapObject.mapId] must be unique
-class MapObjectCollection extends Equatable implements MapObject {
+class MapObjectCollection  implements MapObject {
   MapObjectCollection(
       {required this.mapId,
       required this.mapObjects,
@@ -133,11 +133,4 @@ class MapObjectCollection extends Equatable implements MapObject {
   Map<String, dynamic> _removeJson() {
     return {'id': mapId.value, 'type': runtimeType.toString()};
   }
-
-  @override
-  List<Object> get props =>
-      <Object>[mapId, mapObjects, zIndex, consumeTapEvents, isVisible];
-
-  @override
-  bool get stringify => true;
 }
