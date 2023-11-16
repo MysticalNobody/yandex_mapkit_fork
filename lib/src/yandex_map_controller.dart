@@ -184,7 +184,7 @@ class YandexMapController extends ChangeNotifier {
   Future<void> updateMapObjects(List<MapObject> mapObjects) async {
     final updatedMapObjectCollection =
         _mapObjectCollection.copyWith(mapObjects: mapObjects);
-    final updates = MapObjectUpdates.from(
+    final updates = await MapObjectUpdates.fromCompute(
         {_mapObjectCollection}, {updatedMapObjectCollection});
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
     _mapObjectCollection = updatedMapObjectCollection;
@@ -201,7 +201,8 @@ class YandexMapController extends ChangeNotifier {
     var updatedMapObjectCollection = _mapObjectCollection.copyWith(
       mapObjects: _mapObjectCollection.mapObjects
           .whereNot(toRemoveItems.contains)
-          .toList()..addAll([...(toAdd ?? {}), ...(toChange ?? {})]),
+          .toList()
+        ..addAll([...(toAdd ?? {}), ...(toChange ?? {})]),
     );
     _mapObjectCollection = updatedMapObjectCollection;
     await _channel.invokeMethod('updateMapObjects', {
