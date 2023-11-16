@@ -1,38 +1,5 @@
 part of yandex_mapkit;
 
-List<Set<MapObject>> _computeUpdates(MapUpdatesMessage message) {
-  final previousObjects = Map<MapObjectId, MapObject>.fromEntries(message
-      .previous
-      .map((MapObject object) => MapEntry(object.mapId, object)));
-  final currentObjects = Map<MapObjectId, MapObject>.fromEntries(message.current
-      .map((MapObject object) => MapEntry(object.mapId, object)));
-  final previousObjectIds = previousObjects.keys.toSet();
-  final currentObjectIds = currentObjects.keys.toSet();
-
-  final _objectsToRemove = previousObjectIds
-      .difference(currentObjectIds)
-      .map((MapObjectId id) => previousObjects[id]!)
-      .toSet();
-
-  final _objectsToAdd = currentObjectIds
-      .difference(previousObjectIds)
-      .map((MapObjectId id) => currentObjects[id]!)
-      .toSet();
-
-  final _objectsToChange = currentObjectIds
-      .intersection(previousObjectIds)
-      .map((MapObjectId id) => currentObjects[id]!)
-      .where((MapObject current) => current != previousObjects[current.mapId])
-      .toSet();
-  return [_objectsToAdd, _objectsToChange, _objectsToRemove];
-}
-
-class MapUpdatesMessage {
-  MapUpdatesMessage({required this.previous, required this.current});
-  final Set<MapObject> previous;
-  final Set<MapObject> current;
-}
-
 /// Update specification for a set of objects.
 class MapObjectUpdates<T extends MapObject> extends Equatable {
   MapObjectUpdates.from(this.previous, this.current) {
@@ -66,13 +33,37 @@ class MapObjectUpdates<T extends MapObject> extends Equatable {
     _objectsToChange = _objectsToChange;
   }
 
-  static Future<MapObjectUpdates> fromCompute(Set<MapObject> previous, Set<MapObject> current) async {
+  static List<Set<MapObject>> _computeUpdates(List<Set<MapObject>> message) {
+    final previousObjects = Map<MapObjectId, MapObject>.fromEntries(
+        message[0].map((MapObject object) => MapEntry(object.mapId, object)));
+    final currentObjects = Map<MapObjectId, MapObject>.fromEntries(
+        message[1].map((MapObject object) => MapEntry(object.mapId, object)));
+    final previousObjectIds = previousObjects.keys.toSet();
+    final currentObjectIds = currentObjects.keys.toSet();
+
+    final _objectsToRemove = previousObjectIds
+        .difference(currentObjectIds)
+        .map((MapObjectId id) => previousObjects[id]!)
+        .toSet();
+
+    final _objectsToAdd = currentObjectIds
+        .difference(previousObjectIds)
+        .map((MapObjectId id) => currentObjects[id]!)
+        .toSet();
+
+    final _objectsToChange = currentObjectIds
+        .intersection(previousObjectIds)
+        .map((MapObjectId id) => currentObjects[id]!)
+        .where((MapObject current) => current != previousObjects[current.mapId])
+        .toSet();
+    return [_objectsToAdd, _objectsToChange, _objectsToRemove];
+  }
+
+  static Future<MapObjectUpdates> fromCompute(
+      Set<MapObject> previous, Set<MapObject> current) async {
     final res = await compute(
       _computeUpdates,
-      MapUpdatesMessage(
-        previous: previous,
-        current: current,
-      ),
+      [previous, current],
     );
     return MapObjectUpdates.fromObjects(
       previous,
