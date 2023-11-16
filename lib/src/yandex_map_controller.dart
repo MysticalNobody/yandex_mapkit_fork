@@ -197,9 +197,13 @@ class YandexMapController extends ChangeNotifier {
     Set<MapObject>? toRemove,
   }) async {
     final toRemoveItems = [...(toRemove ?? {}), ...(toChange ?? {})];
-    _mapObjectCollection.mapObjects.removeWhere(toRemoveItems.contains);
-    _mapObjectCollection.mapObjects
-        .addAll([...(toAdd ?? {}), ...(toChange ?? {})]);
+
+    var updatedMapObjectCollection = _mapObjectCollection.copyWith(
+      mapObjects: _mapObjectCollection.mapObjects
+          .whereNot(toRemoveItems.contains)
+          .toList()..addAll([...(toAdd ?? {}), ...(toChange ?? {})]),
+    );
+    _mapObjectCollection = updatedMapObjectCollection;
     await _channel.invokeMethod('updateMapObjects', {
       'toAdd': toAdd?.map((el) => el._createJson()).toList() ?? [],
       'toChange': toChange?.map((el) => el._createJson()).toList() ?? [],
@@ -288,7 +292,7 @@ class YandexMapController extends ChangeNotifier {
         circle: Circle._fromJson(arguments['circle']));
     final view = UserLocationView._(
         arrow: arrow, pin: pin, accuracyCircle: accuracyCircle);
-    final newView =(await _yandexMapState.widget.onUserLocationAdded!(view));
+    final newView = (await _yandexMapState.widget.onUserLocationAdded!(view));
     final newPin = newView?.pin.dup(pin.mapId) ?? pin;
     final newArrow = newView?.arrow.dup(arrow.mapId) ?? arrow;
     final newAccuracyCircle =
