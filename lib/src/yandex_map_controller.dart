@@ -181,7 +181,7 @@ class YandexMapController extends ChangeNotifier {
     await _channel.invokeMethod('updateMapOptions', options);
   }
 
-  void updateMapObjects(List<MapObject> mapObjects) async {
+  Future<void> updateMapObjects(List<MapObject> mapObjects) async {
     final updatedMapObjectCollection =
         _mapObjectCollection.copyWith(mapObjects: mapObjects);
     final updates = MapObjectUpdates.from(
