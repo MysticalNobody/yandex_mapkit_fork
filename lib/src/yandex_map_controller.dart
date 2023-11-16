@@ -191,14 +191,12 @@ class YandexMapController extends ChangeNotifier {
   }
 
   Future<void> addMapObject(MapObject mapObject) async {
-    final updates = MapObjectUpdates.from({
-      _mapObjectCollection
-    }, {
-      _mapObjectCollection.copyWith(
-        mapObjects: [..._mapObjectCollection.mapObjects, mapObject],
-      )
-    });
+    final updatedMapObjectCollection = _mapObjectCollection
+        .copyWith(mapObjects: [..._mapObjectCollection.mapObjects, mapObject]);
+    final updates = MapObjectUpdates.from(
+        {_mapObjectCollection}, {updatedMapObjectCollection});
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
+    _mapObjectCollection = updatedMapObjectCollection;
   }
 
   // /// Changes map objects on the map
