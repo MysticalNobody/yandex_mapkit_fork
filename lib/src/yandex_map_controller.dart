@@ -191,11 +191,12 @@ class YandexMapController extends ChangeNotifier {
   }
 
   Future<void> addMapObject(MapObject mapObject) async {
-    final updatedMapObjectCollection = {..._nonRootMapObjects, mapObject};
-    final updates =
-        MapObjectUpdates.from(_nonRootMapObjects, updatedMapObjectCollection);
+    final updatedMapObjectCollection = _mapObjectCollection
+        .copyWith(mapObjects: [..._mapObjectCollection.mapObjects, mapObject]);
+    final updates = MapObjectUpdates.from(
+        {_mapObjectCollection}, {updatedMapObjectCollection});
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
-    _nonRootMapObjects.add(mapObject);
+    _mapObjectCollection = updatedMapObjectCollection;
   }
 
   // /// Changes map objects on the map
@@ -212,12 +213,12 @@ class YandexMapController extends ChangeNotifier {
           .toList()
         ..addAll([...(toAdd ?? {}), ...(toChange ?? {})]),
     );
-    _mapObjectCollection = updatedMapObjectCollection;
     await _channel.invokeMethod('updateMapObjects', {
       'toAdd': toAdd?.map((el) => el._createJson()).toList() ?? [],
       'toChange': toChange?.map((el) => el._createJson()).toList() ?? [],
       'toRemove': toRemove?.map((el) => el._removeJson()).toList() ?? [],
     });
+    _mapObjectCollection = updatedMapObjectCollection;
   }
 
   Future<dynamic> _handleMethodCall(MethodCall call) async {
