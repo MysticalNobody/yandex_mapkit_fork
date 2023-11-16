@@ -33,47 +33,6 @@ class MapObjectUpdates<T extends MapObject> extends Equatable {
     _objectsToChange = _objectsToChange;
   }
 
-  static List<Set<MapObject>> _computeUpdates(List<Set<MapObject>> message) {
-    final previousObjects = Map<MapObjectId, MapObject>.fromEntries(
-        message[0].map((MapObject object) => MapEntry(object.mapId, object)));
-    final currentObjects = Map<MapObjectId, MapObject>.fromEntries(
-        message[1].map((MapObject object) => MapEntry(object.mapId, object)));
-    final previousObjectIds = previousObjects.keys.toSet();
-    final currentObjectIds = currentObjects.keys.toSet();
-
-    final _objectsToRemove = previousObjectIds
-        .difference(currentObjectIds)
-        .map((MapObjectId id) => previousObjects[id]!)
-        .toSet();
-
-    final _objectsToAdd = currentObjectIds
-        .difference(previousObjectIds)
-        .map((MapObjectId id) => currentObjects[id]!)
-        .toSet();
-
-    final _objectsToChange = currentObjectIds
-        .intersection(previousObjectIds)
-        .map((MapObjectId id) => currentObjects[id]!)
-        .where((MapObject current) => current != previousObjects[current.mapId])
-        .toSet();
-    return [_objectsToAdd, _objectsToChange, _objectsToRemove];
-  }
-
-  static Future<MapObjectUpdates> fromCompute(
-      Set<MapObject> previous, Set<MapObject> current) async {
-    final res = await compute(
-      _computeUpdates,
-      [previous, current],
-    );
-    return MapObjectUpdates.fromObjects(
-      previous,
-      current,
-      res[0],
-      res[1],
-      res[2],
-    );
-  }
-
   /// Set of objects to be added in this update.
   Set<T> get objectsToAdd => _objectsToAdd;
   late final Set<T> _objectsToAdd;
