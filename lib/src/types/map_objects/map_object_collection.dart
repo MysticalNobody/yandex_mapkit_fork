@@ -5,15 +5,11 @@ part of yandex_mapkit;
 class MapObjectCollection extends Equatable implements MapObject {
   MapObjectCollection(
       {required this.mapId,
-      required List<MapObject> mapObjects,
+      required this.mapObjects,
       this.zIndex = 0.0,
       this.onTap,
       this.consumeTapEvents = false,
-      this.isVisible = true})
-      : mapObjects = List.unmodifiable(mapObjects
-            .groupFoldBy<MapObjectId, MapObject>(
-                (element) => element.mapId, (previous, element) => element)
-            .values);
+      this.isVisible = true});
 
   /// List of [MapObject] in this collection.
   ///

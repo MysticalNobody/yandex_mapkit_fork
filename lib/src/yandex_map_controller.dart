@@ -17,13 +17,10 @@ class YandexMapController extends ChangeNotifier {
   /// Cluster placemarks, user location objects, etc.
   final Set<MapObject> _nonRootMapObjects = {};
 
-  MapObjectCollection _otherMapObjects = MapObjectCollection(
-      mapId: MapObjectId('other_map_object_collection'), mapObjects: []);
 
   List<MapObject> get _allMapObjects => [
         ..._mapObjectCollection.mapObjects,
         ..._nonRootMapObjects,
-        ..._otherMapObjects.mapObjects,
       ];
 
   static Future<YandexMapController> _init(
@@ -200,6 +197,7 @@ class YandexMapController extends ChangeNotifier {
     final updates = MapObjectUpdates.from(
         {_mapObjectCollection}, {updatedMapObjectCollection});
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
+    _mapObjectCollection.mapObjects.add(mapObject);
   }
 
   // /// Changes map objects on the map
