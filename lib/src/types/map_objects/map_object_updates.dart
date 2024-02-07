@@ -1,7 +1,7 @@
 part of yandex_mapkit;
 
 /// Update specification for a set of objects.
-class MapObjectUpdates<T extends MapObject> extends Equatable {
+class MapObjectUpdates<T extends MapObject>  {
   MapObjectUpdates.from(this.previous, this.current) {
     final previousObjects = Map<MapObjectId, T>.fromEntries(
         previous.map((T object) => MapEntry(object.mapId, object)));
@@ -50,16 +50,6 @@ class MapObjectUpdates<T extends MapObject> extends Equatable {
 
   /// Set of objects after update
   final Set<T> current;
-
-  @override
-  List<Object> get props => <Object>[
-        _objectsToAdd,
-        _objectsToChange,
-        _objectsToRemove,
-      ];
-
-  @override
-  bool get stringify => true;
 
   Map<String, dynamic> toJson() {
     return {
