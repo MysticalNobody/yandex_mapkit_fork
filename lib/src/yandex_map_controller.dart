@@ -189,6 +189,7 @@ class YandexMapController extends ChangeNotifier {
     final updates = MapObjectUpdates.from(
         {_mapObjectCollection}, {updatedMapObjectCollection});
     print('updateMapObjects: updates took ${stopwatch.elapsedMilliseconds}ms');
+    stopwatch.stop();
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
     _mapObjectCollection = updatedMapObjectCollection;
   }
