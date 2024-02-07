@@ -1,12 +1,5 @@
 part of yandex_mapkit;
 
-class MapObjects$Input {
-  const MapObjects$Input(this.previous, this.current);
-
-  final Set<MapObject> previous;
-  final Set<MapObject> current;
-}
-
 /// Update specification for a set of objects.
 class MapObjectUpdates<T extends MapObject> extends Equatable {
   MapObjectUpdates.from(this.previous, this.current) {
