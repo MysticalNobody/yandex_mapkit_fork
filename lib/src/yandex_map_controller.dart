@@ -17,7 +17,6 @@ class YandexMapController extends ChangeNotifier {
   /// Cluster placemarks, user location objects, etc.
   final Set<MapObject> _nonRootMapObjects = {};
 
-
   List<MapObject> get _allMapObjects => [
         ..._mapObjectCollection.mapObjects,
         ..._nonRootMapObjects,
@@ -183,10 +182,13 @@ class YandexMapController extends ChangeNotifier {
   }
 
   Future<void> updateMapObjects(List<MapObject> mapObjects) async {
+    final Stopwatch stopwatch = Stopwatch()..start();
     final updatedMapObjectCollection =
         _mapObjectCollection.copyWith(mapObjects: mapObjects);
+    print('updateMapObjects: copyWith took ${stopwatch.elapsedMilliseconds}ms');
     final updates = MapObjectUpdates.from(
         {_mapObjectCollection}, {updatedMapObjectCollection});
+    print('updateMapObjects: updates took ${stopwatch.elapsedMilliseconds}ms');
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
     _mapObjectCollection = updatedMapObjectCollection;
   }
