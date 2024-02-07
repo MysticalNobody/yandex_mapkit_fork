@@ -8,7 +8,7 @@ class MapObjects$Input {
 }
 
 /// Update specification for a set of objects.
-class MapObjectUpdates<T extends MapObject> extends Equatable {
+class MapObjectUpdates<T extends MapObject> {
   MapObjectUpdates.from(this.previous, this.current) {
     final previousObjects = Map<MapObjectId, T>.fromEntries(
         previous.map((T object) => MapEntry(object.mapId, object)));
@@ -59,14 +59,26 @@ class MapObjectUpdates<T extends MapObject> extends Equatable {
   final Set<T> current;
 
   @override
-  List<Object> get props => <Object>[
-        _objectsToAdd,
-        _objectsToChange,
-        _objectsToRemove,
-      ];
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is MapObjectUpdates &&
+        setEquals(_objectsToAdd, other._objectsToAdd) &&
+        setEquals(_objectsToRemove, other._objectsToRemove) &&
+        setEquals(_objectsToChange, other._objectsToChange);
+  }
 
   @override
-  bool get stringify => true;
+  int get hashCode => Object.hash(Object.hashAll(_objectsToAdd),
+      Object.hashAll(_objectsToRemove), Object.hashAll(_objectsToChange));
+
+  @override
+  String toString() {
+    return '${objectRuntimeType(this, 'MapsObjectUpdates')}(add: $objectsToAdd, '
+        'remove: $_objectsToRemove, '
+        'change: $objectsToChange)';
+  }
 
   Map<String, dynamic> toJson() {
     return {

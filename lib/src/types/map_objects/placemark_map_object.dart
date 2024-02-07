@@ -189,7 +189,6 @@ class PlacemarkMapObject extends Equatable implements MapObject {
         isDraggable,
         opacity,
         direction,
-        icon
       ];
 
   @override
@@ -197,7 +196,7 @@ class PlacemarkMapObject extends Equatable implements MapObject {
 }
 
 /// Visual icon of a single [PlacemarkMapObject]
-class PlacemarkIcon extends Equatable {
+class PlacemarkIcon {
   /// Serialized information about how to visually show a single [PlacemarkMapObject]
   final Map<String, dynamic> _json;
 
@@ -217,16 +216,10 @@ class PlacemarkIcon extends Equatable {
   }
 
   Map<String, dynamic> toJson() => _json;
-
-  @override
-  List<Object> get props => <Object>[_json];
-
-  @override
-  bool get stringify => true;
 }
 
 /// Visual icon of an icon to be used to visually show a [PlacemarkMapObject]
-class PlacemarkIconStyle extends Equatable {
+class PlacemarkIconStyle {
   /// Asset name to use as Placemark icon
   final BitmapDescriptor image;
 
@@ -282,20 +275,6 @@ class PlacemarkIconStyle extends Equatable {
       'tappableArea': tappableArea?.toJson()
     };
   }
-
-  @override
-  List<Object?> get props => <Object?>[
-        anchor,
-        rotationType,
-        zIndex,
-        isFlat,
-        isVisible,
-        scale,
-        tappableArea
-      ];
-
-  @override
-  bool get stringify => true;
 }
 
 /// A part of a composite icon to visually show a [PlacemarkMapObject] icon

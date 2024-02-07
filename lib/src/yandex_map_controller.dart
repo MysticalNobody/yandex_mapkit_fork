@@ -17,13 +17,11 @@ class YandexMapController extends ChangeNotifier {
   /// Cluster placemarks, user location objects, etc.
   final Set<MapObject> _nonRootMapObjects = {};
 
+
   List<MapObject> get _allMapObjects => [
         ..._mapObjectCollection.mapObjects,
         ..._nonRootMapObjects,
       ];
-  static void mapObjectsFromStatic(MapObjects$Input input) {
-    MapObjectUpdates<MapObject>.from(input.current, input.previous);
-  }
 
   static Future<YandexMapController> _init(
       int id, _YandexMapState yandexMapState) async {
@@ -185,33 +183,10 @@ class YandexMapController extends ChangeNotifier {
   }
 
   Future<void> updateMapObjects(List<MapObject> mapObjects) async {
-    final stopwatch = Stopwatch()..start();
     final updatedMapObjectCollection =
         _mapObjectCollection.copyWith(mapObjects: mapObjects);
-    print('updateMapObjects: copyWith took ${stopwatch.elapsedMilliseconds}ms');
-    final receivePort = ReceivePort();
-    final completer = Completer<MapObjectUpdates>();
-    final isolate = await Isolate.spawn(
-      (v) => mapObjectsFromStatic(v),
-      MapObjects$Input({
-        _mapObjectCollection.copyWith(
-          mapObjects: _mapObjectCollection.mapObjects.toList(),
-        )
-      }, {
-        updatedMapObjectCollection.copyWith(
-          mapObjects: updatedMapObjectCollection.mapObjects.toList(),
-        )
-      }),
-      onExit: receivePort.sendPort,
-    );
-    print('updateMapObjects: updates took ${stopwatch.elapsedMilliseconds}ms');
-    stopwatch.stop();
-    receivePort.listen((dynamic data) {
-      completer.complete(data as MapObjectUpdates);
-      receivePort.close();
-      isolate.kill();
-    });
-    final updates = await completer.future;
+    final updates = MapObjectUpdates.from(
+        {_mapObjectCollection}, {updatedMapObjectCollection});
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
     _mapObjectCollection = updatedMapObjectCollection;
   }
@@ -219,12 +194,9 @@ class YandexMapController extends ChangeNotifier {
   Future<void> addMapObject(MapObject mapObject) async {
     final updatedMapObjectCollection = _mapObjectCollection
         .copyWith(mapObjects: [..._mapObjectCollection.mapObjects, mapObject]);
-    // final updates =
-    //     await compute<MapObjects$Input, MapObjectUpdates<MapObjectCollection>>(
-    //         mapObjectsFromStatic,
-    //         MapObjects$Input(
-    //             {_mapObjectCollection}, {updatedMapObjectCollection}));
-    // await _channel.invokeMethod('updateMapObjects', updates.toJson());
+    final updates = MapObjectUpdates.from(
+        {_mapObjectCollection}, {updatedMapObjectCollection});
+    await _channel.invokeMethod('updateMapObjects', updates.toJson());
     _mapObjectCollection.mapObjects.add(mapObject);
   }
 
