@@ -21,6 +21,9 @@ class YandexMapController extends ChangeNotifier {
         ..._mapObjectCollection.mapObjects,
         ..._nonRootMapObjects,
       ];
+  static void mapObjectsFromStatic(MapObjects$Input input) {
+    MapObjectUpdates<MapObject>.from(input.current, input.previous);
+  }
 
   static Future<YandexMapController> _init(
       int id, _YandexMapState yandexMapState) async {

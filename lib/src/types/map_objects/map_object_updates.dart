@@ -1,9 +1,5 @@
 part of yandex_mapkit;
 
-void mapObjectsFromStatic(MapObjects$Input input) {
-  MapObjectUpdates<MapObject>.from(input.current, input.previous);
-}
-
 class MapObjects$Input {
   const MapObjects$Input(this.previous, this.current);
 
