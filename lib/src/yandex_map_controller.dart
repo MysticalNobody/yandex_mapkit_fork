@@ -193,7 +193,15 @@ class YandexMapController extends ChangeNotifier {
     final completer = Completer<MapObjectUpdates>();
     final isolate = await Isolate.spawn(
       mapObjectsFromStatic,
-      MapObjects$Input({_mapObjectCollection.clone()}, {updatedMapObjectCollection.clone()}),
+      MapObjects$Input({
+        _mapObjectCollection.copyWith(
+          mapObjects: _mapObjectCollection.mapObjects.toList(),
+        )
+      }, {
+        updatedMapObjectCollection.copyWith(
+          mapObjects: updatedMapObjectCollection.mapObjects.toList(),
+        )
+      }),
       onExit: receivePort.sendPort,
     );
     print('updateMapObjects: updates took ${stopwatch.elapsedMilliseconds}ms');
