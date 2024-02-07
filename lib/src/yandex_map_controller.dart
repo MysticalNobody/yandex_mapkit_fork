@@ -182,17 +182,25 @@ class YandexMapController extends ChangeNotifier {
   }
 
   Future<void> updateMapObjects(List<MapObject> mapObjects) async {
-    final Stopwatch stopwatch = Stopwatch()..start();
+    final stopwatch = Stopwatch()..start();
     final updatedMapObjectCollection =
         _mapObjectCollection.copyWith(mapObjects: mapObjects);
     print('updateMapObjects: copyWith took ${stopwatch.elapsedMilliseconds}ms');
-    final updates =
-        await compute<MapObjects$Input, MapObjectUpdates<MapObjectCollection>>(
-            mapObjectsFromStatic,
-            MapObjects$Input(
-                {_mapObjectCollection}, {updatedMapObjectCollection}));
+    final receivePort = ReceivePort();
+    final completer = Completer<MapObjectUpdates>();
+    final isolate = await Isolate.spawn(
+      mapObjectsFromStatic,
+      MapObjects$Input({_mapObjectCollection}, {updatedMapObjectCollection}),
+      onExit: receivePort.sendPort,
+    );
     print('updateMapObjects: updates took ${stopwatch.elapsedMilliseconds}ms');
     stopwatch.stop();
+    receivePort.listen((dynamic data) {
+      completer.complete(data as MapObjectUpdates);
+      receivePort.close();
+      isolate.kill();
+    });
+    final updates = await completer.future;
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
     _mapObjectCollection = updatedMapObjectCollection;
   }
