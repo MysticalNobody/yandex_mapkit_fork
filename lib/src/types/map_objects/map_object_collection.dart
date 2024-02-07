@@ -10,7 +10,7 @@ class MapObjectCollection extends Equatable implements MapObject {
       this.onTap,
       this.consumeTapEvents = false,
       this.isVisible = true})
-      : mapObjects = List.unmodifiable(mapObjects
+      : mapObjects = List.from(mapObjects
             .groupFoldBy<MapObjectId, MapObject>(
                 (element) => element.mapId, (previous, element) => element)
             .values);

@@ -16,7 +16,7 @@ class ClusterizedPlacemarkCollection extends Equatable implements MapObject {
     this.onClusterTap,
     this.consumeTapEvents = false,
     this.isVisible = true
-  }) : placemarks = List.unmodifiable(placemarks.groupFoldBy<MapObjectId, PlacemarkMapObject>(
+  }) : placemarks = List.from(placemarks.groupFoldBy<MapObjectId, PlacemarkMapObject>(
       (element) => element.mapId,
       (previous, element) => element
     ).values);
