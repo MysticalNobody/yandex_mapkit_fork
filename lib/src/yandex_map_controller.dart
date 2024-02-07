@@ -186,8 +186,11 @@ class YandexMapController extends ChangeNotifier {
     final updatedMapObjectCollection =
         _mapObjectCollection.copyWith(mapObjects: mapObjects);
     print('updateMapObjects: copyWith took ${stopwatch.elapsedMilliseconds}ms');
-    final updates = await compute(mapObjectsFromStatic,
-        MapObjects$Input({_mapObjectCollection}, {updatedMapObjectCollection}));
+    final updates =
+        await compute<MapObjects$Input, MapObjectUpdates<MapObjectCollection>>(
+            mapObjectsFromStatic,
+            MapObjects$Input(
+                {_mapObjectCollection}, {updatedMapObjectCollection}));
     print('updateMapObjects: updates took ${stopwatch.elapsedMilliseconds}ms');
     stopwatch.stop();
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
@@ -197,8 +200,11 @@ class YandexMapController extends ChangeNotifier {
   Future<void> addMapObject(MapObject mapObject) async {
     final updatedMapObjectCollection = _mapObjectCollection
         .copyWith(mapObjects: [..._mapObjectCollection.mapObjects, mapObject]);
-    final updates = await compute(mapObjectsFromStatic,
-        MapObjects$Input({_mapObjectCollection}, {updatedMapObjectCollection}));
+    final updates =
+        await compute<MapObjects$Input, MapObjectUpdates<MapObjectCollection>>(
+            mapObjectsFromStatic,
+            MapObjects$Input(
+                {_mapObjectCollection}, {updatedMapObjectCollection}));
     await _channel.invokeMethod('updateMapObjects', updates.toJson());
     _mapObjectCollection.mapObjects.add(mapObject);
   }
