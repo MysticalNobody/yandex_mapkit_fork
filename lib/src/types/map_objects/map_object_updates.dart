@@ -1,15 +1,15 @@
 part of yandex_mapkit;
 
-MapObjectUpdates mapObjectsFromStatic(
+MapObjectUpdates<MapObjectCollection> mapObjectsFromStatic(
     MapObjects$Input input) {
-  return MapObjectUpdates.from(input.current, input.previous);
+  return MapObjectUpdates<MapObjectCollection>.from(input.current, input.previous);
 }
 
-class MapObjects$Input<T extends MapObject> {
+class MapObjects$Input {
   const MapObjects$Input(this.previous, this.current);
 
-  final Set<T> previous;
-  final Set<T> current;
+  final Set<MapObjectCollection> previous;
+  final Set<MapObjectCollection> current;
 }
 
 /// Update specification for a set of objects.
