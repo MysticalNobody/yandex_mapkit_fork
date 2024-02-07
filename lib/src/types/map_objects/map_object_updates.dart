@@ -1,5 +1,10 @@
 part of yandex_mapkit;
 
+MapObjectUpdates mapObjectsFromStatic(
+    Set<MapObject> previous, Set<MapObject> current) {
+  return MapObjectUpdates.from(previous, current);
+}
+
 /// Update specification for a set of objects.
 class MapObjectUpdates<T extends MapObject> extends Equatable {
   MapObjectUpdates.from(this.previous, this.current) {
