@@ -192,7 +192,7 @@ class YandexMapController extends ChangeNotifier {
     final receivePort = ReceivePort();
     final completer = Completer<MapObjectUpdates>();
     final isolate = await Isolate.spawn(
-      mapObjectsFromStatic,
+      (v) => mapObjectsFromStatic(v),
       MapObjects$Input({
         _mapObjectCollection.copyWith(
           mapObjects: _mapObjectCollection.mapObjects.toList(),
