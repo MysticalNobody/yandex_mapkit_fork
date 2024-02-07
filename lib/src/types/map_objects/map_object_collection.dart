@@ -140,7 +140,7 @@ class MapObjectCollection extends Equatable implements MapObject {
 
   @override
   List<Object> get props =>
-      <Object>[mapId, zIndex, consumeTapEvents, isVisible];
+      <Object>[mapId, mapObjects, zIndex, consumeTapEvents, isVisible];
 
   @override
   bool get stringify => true;
