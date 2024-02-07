@@ -1,8 +1,7 @@
 part of yandex_mapkit;
 
-MapObjectUpdates<MapObjectCollection> mapObjectsFromStatic(
-    MapObjects$Input input) {
-  return MapObjectUpdates<MapObjectCollection>.from(input.current, input.previous);
+void mapObjectsFromStatic(MapObjects$Input input) {
+  MapObjectUpdates<MapObjectCollection>.from(input.current, input.previous);
 }
 
 class MapObjects$Input {
